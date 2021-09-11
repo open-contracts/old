@@ -1,5 +1,5 @@
 window.ethereum.request({ method: 'eth_requestAccounts' })
-window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
+
 const chainId = await ethereum.request({ method: 'eth_chainId' });
 $('#network').html(chainId)
 const provider = new ethers.providers.Web3Provider(window.ethereum);
