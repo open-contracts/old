@@ -1,7 +1,7 @@
 window.ethereum.request({ method: 'eth_requestAccounts' })
 ethereum.on('chainChanged', (_chainId) => window.location.reload());
-ethereum.request({ method: 'eth_chainId' }).then((chainID) => {$('#network').html(chainID);});
 const provider = new ethers.providers.Web3Provider(window.ethereum);
+provider.getNetwork().name.then((chain) => {$('#network').html(chain);});
 //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
 
 const user = provider.getSigner();
