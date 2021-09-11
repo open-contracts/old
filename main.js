@@ -1,7 +1,6 @@
 window.ethereum.request({ method: 'eth_requestAccounts' })
 
-const chainId = await ethereum.request({ method: 'eth_chainId' });
-$('#network').html(chainId)
+ethereum.request({ method: 'eth_chainId' }).then(chainID =>$('#network').html(chainId));
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
 
