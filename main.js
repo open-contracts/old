@@ -1,16 +1,7 @@
-
-//++ import { oc } from "opencontracts";
-// A Web3Provider wraps a standard Web3 provider, which is
-// what Metamask injects as window.ethereum into each page
+window.ethereum.enable()
 const provider = new ethers.providers.Web3Provider(window.ethereum)
+//++ const openProvider = new opencontracts.providers.Web3Provider(provider)
 
-
-//// TODO: const openProvider = new oc.providers.Web3Provider(provider)
-     //// handling the logic of ec2 and enclave communication
-
-// The Metamask plugin also allows signing transactions to
-// send ether and pay to change state within the blockchain.
-// For this, you need the account signer...
 const user = provider.getSigner()
 
 // makes contract a global variable
@@ -19,12 +10,14 @@ var contract = null;
 // executed by "Load Contract" button
 function loadContract() {
   // Load Contract
-	var contractAddress = $('#contractAddress').val();
+  var contractAddress = $('#contractAddress').val();
   var contractABI = JSON.parse($('#contractABI').val());
+  //++ const openContractABI = JSON.parse($('#oracle.py').val());
   contract = new ethers.Contract(contractAddress, contractABI, provider).connect(user);
-  var contractFunctions = contract.interface.fragments;
+  //++ const openContract = new opencontracts.Contract(contract, openContractABI)
     
   // add a button for every function in our contract
+  var contractFunctions = contract.interface.fragments;
   var fnames = "<p><b>Functions:</b></p>";
   for (let i = 1; i < contractFunctions.length; i++) {
     fname = contractFunctions[i].name;
