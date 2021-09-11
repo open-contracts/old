@@ -1,4 +1,4 @@
-window.ethereum.request({ method: 'eth_requestAccounts' })
+window.ethereum.request({ method: 'eth_requestAccounts' }).then($('#network').html("connected"))
 const provider = new ethers.providers.Web3Provider(window.ethereum)
 //++ const openProvider = new opencontracts.providers.Web3Provider(provider)
 
