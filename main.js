@@ -2,13 +2,13 @@ var provider = null;
 var user = null;
 var contract = null;
 window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
-window.ethereum.request({ method: 'eth_requestAccounts' })
-setup()
+setup();
 
 async function setup() {
   provider =  new ethers.providers.Web3Provider(await detectEthereumProvider());
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
+  window.ethereum.request({ method: 'eth_requestAccounts' });
   user = provider.getSigner();
 }
 
