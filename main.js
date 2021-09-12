@@ -1,13 +1,16 @@
-window.ethereum.request({ method: 'eth_requestAccounts' })
-ethereum.on('chainChanged', (_chainId) => window.location.reload());
-const provider = new ethers.providers.Web3Provider(window.ethereum);
-provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
-//++ const openProvider = new opencontracts.providers.Web3Provider(provider);
-
-const user = provider.getSigner();
-
-// makes contract a global variable
+var provider = null;
+var user = null;
 var contract = null;
+window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
+window.ethereum.request({ method: 'eth_requestAccounts' })
+setup()
+
+async function setup() {
+  const provider = await detectEthereumProvider();
+  provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
+  //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
+  const user = provider.getSigner();
+}
 
 // executed by "Load Contract" button
 function loadContract() {
