@@ -12,10 +12,11 @@ if (window.ethereum) {
 }
 
 function setup() {
-  $('#network').html("called setup");
-  window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
-  const newAccounts = window.ethereum.request({method: 'eth_requestAccounts'});
-  provider =  new ethers.providers.Web3Provider(window.ethereum, 'any');
+  $('#network').html("starting connection...");
+  const {ethereum} = window;
+  ethereum.on('chainChanged', (_chainId) => window.location.reload());
+  const newAccounts = ethereum.request({method: 'eth_requestAccounts'});
+  provider =  new ethers.providers.Web3Provider(ethereum, 'any');
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
   user = provider.getSigner();
