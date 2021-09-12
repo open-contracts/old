@@ -11,9 +11,9 @@ if (window.ethereum) {
   setTimeout(handleEthereum, 30000); // 30 seconds
 }
 
-async function setup() {
+function setup() {
   window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
-  const newAccounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+  const newAccounts = window.ethereum.request({method: 'eth_requestAccounts'});
   provider =  new ethers.providers.Web3Provider(window.ethereum, 'any');
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
