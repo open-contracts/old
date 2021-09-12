@@ -8,7 +8,7 @@ if (window.ethereum) {
   window.addEventListener('ethereum#initialized', setup, {
     once: true,
   });
-  setTimeout(handleEthereum, 3000); // 3 seconds
+  setTimeout(handleEthereum, 30000); // 3 seconds
 }
 
 async function setup() {
