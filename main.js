@@ -13,8 +13,8 @@ if (window.ethereum) {
 
 async function setup() {
   window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
-  provider =  new ethers.providers.Web3Provider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
+  const newAccounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+  provider =  new ethers.providers.Web3Provider(window.ethereum, 'any');
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
   user = provider.getSigner();
