@@ -6,7 +6,7 @@ window.ethereum.request({ method: 'eth_requestAccounts' })
 setup()
 
 async function setup() {
-  const provider = await detectEthereumProvider();
+  const provider =  new ethers.providers.Web3Provider(await detectEthereumProvider());
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
   const user = provider.getSigner();
