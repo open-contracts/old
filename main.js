@@ -1,15 +1,22 @@
 var provider = null;
 var user = null;
 var contract = null;
-window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
-setup();
+
+if (window.ethereum) {
+  setup();
+} else {
+  window.addEventListener('ethereum#initialized', setup, {
+    once: true,
+  });
+  setTimeout(handleEthereum, 3000); // 3 seconds
+}
 
 async function setup() {
+  window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
   window.ethereum.request({ method: 'eth_requestAccounts' });
-  provider =  new ethers.providers.Web3Provider(await detectEthereumProvider());
+  provider =  new ethers.providers.Web3Provider(window.ethereum);
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
-  
   user = provider.getSigner();
 }
 
