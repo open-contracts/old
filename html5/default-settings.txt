@@ -6,3 +6,6 @@
 # encoding = auto
 # bandwidth_limit = 10000000
 # debug_keyboard = true
+port = 14500
+server = 18.222.153.238
+key = 1643cc9c-0c7d-40de-9ff1-2a9904dfe961
