@@ -9,6 +9,8 @@
 port = 14500
 server = 18.222.153.238
 aes-key = abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+key = abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+encryption-key = abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
 ssl = false
 encryption = AES
 
