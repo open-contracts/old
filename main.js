@@ -99,3 +99,7 @@ async function callFunction(fname) {
    }
    
 }
+
+function xpra() {
+$('#xpra').html('<iframe src=/html5/connect.html title="Xpra Window" width="100%" height="1200" ></iframe>')
+}
