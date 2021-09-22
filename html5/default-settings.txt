@@ -8,7 +8,7 @@
 # debug_keyboard = true
 port = 14500
 server = 18.222.153.238
-encryption-key = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+aes-key = abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
 ssl = false
 encryption = AES
 
