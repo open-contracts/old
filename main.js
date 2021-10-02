@@ -101,5 +101,14 @@ async function callFunction(fname) {
 }
 
 function xpra() {
-$('#xpra').html('<iframe src=/html5/connect.html title="Xpra Window" width="100%" height="1200" ></iframe>')
+   const urlParams = new URLSearchParams(window.location.search);
+   var server = opencontracts.io
+   var key = enterkeyhere
+   if (urlParams.has('server')) {
+      server = urlParams.get('server')
+   }
+   if (urlParams.has('key')) {
+      key = urlParams.get('key')
+   }
+$('#xpra').html('<iframe src=/html5/connect.html?server='+server+'&key='+key' title="Xpra Window" width="100%" height="1200" ></iframe>')
 }
