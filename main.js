@@ -110,5 +110,5 @@ function xpra() {
    if (urlParams.has('key')) {
       key = urlParams.get('key')
    }
-$('#xpra').html('<iframe src=/html5/connect.html?server='+server+'&key='+key' title="Xpra Window" width="100%" height="1200" ></iframe>')
+$('#xpra').html('<iframe src=/html5/connect.html?server='+server+'&key='+key+' title="Xpra Window" width="100%" height="1200" ></iframe>')
 }
