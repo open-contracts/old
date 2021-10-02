@@ -13,7 +13,7 @@ function init() {
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
   user = provider.getSigner();
-  initialized = true,
+  initialized = true;
 }
 
 // executed by "Load Contract" button
