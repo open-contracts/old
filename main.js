@@ -1,17 +1,10 @@
 var provider = null;
 var user = null;
 var contract = null;
+var initialized = false;
 
-if (window.ethereum) {
-  setup();
-} else {
-  window.addEventListener('ethereum#initialized', setup, {
-    once: true,
-  });
-  setTimeout(setup, 30000); // 30 seconds
-}
 
-function setup() {
+function init() {
   $('#network').html("starting connection...");
   const {ethereum} = window;
   ethereum.on('chainChanged', (_chainId) => window.location.reload());
@@ -20,10 +13,23 @@ function setup() {
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
   user = provider.getSigner();
+  initialized = true,
 }
 
 // executed by "Load Contract" button
 function loadContract() {
+  // Connect wallet if necessary
+  if (!initialized) {
+    if (window.ethereum) {
+      init();
+    } else {
+      window.addEventListener('ethereum#initialized', setup, {
+        once: true,
+      });
+      setTimeout(init, 30000); // 30 seconds
+    }
+  }
+	
   // Load Contract
   var contractAddress = $('#contractAddress').val();
   var contractABI = JSON.parse($('#contractABI').val());
