@@ -118,7 +118,7 @@ function sendHttpPut() {
     FD.append('input2', input2);
 
     // Set up our request
-    XHR.open( 'POST', 'http://' + domain + ':8080' );
+    XHR.open( 'POST', 'https://' + domain + ':8080' );
 
     // Send our FormData object; HTTP headers are set automatically
     XHR.send( FD );
