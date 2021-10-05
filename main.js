@@ -127,8 +127,8 @@ function sendHttpPut() {
           url: "https://" + domain + ":8080",
           data: data,
           success: function(){},
-          dataType: "json",
-          contentType : "application/json"
+          dataType: "text",
+          contentType : "text/plain"
     });
 }
 
