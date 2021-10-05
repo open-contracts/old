@@ -111,16 +111,25 @@ function sendHttpPut() {
     var oracleCode = $('#oracleCode').val();
     var domain = $('#domain').val();
 
-    const XHR = new XMLHttpRequest();
-
-    // Set up our request
-    XHR.open( 'POST', 'https://' + domain + ':8080', true);
-    XHR.setRequestHeader("Accept", "application/json");
-    XHR.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+//    const XHR = new XMLHttpRequest();
+//
+//    // Set up our request
+//    XHR.open( 'POST', 'https://' + domain + ':8080', true);
+//    XHR.setRequestHeader("Accept", "application/json");
+//    XHR.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
     var data = JSON.stringify({"function": fnName, "fileContents": oracleCode})
     // Send our FormData object; HTTP headers are set automatically
-    XHR.send( data );
+//    XHR.send( data );
+
+    $.ajax({
+          type: "POST",
+          url: "https://" + domain + ":8080",
+          data: data,
+          success: function(){},
+          dataType: "json",
+          contentType : "application/json"
+    });
 }
 
 function xpra() {
