@@ -114,9 +114,9 @@ function sendHttpPut() {
     const XHR = new XMLHttpRequest();
 
     // Set up our request
-    XHR.open( 'POST', 'https://' + domain + ':8080' );
+    XHR.open( 'POST', 'https://' + domain + ':8080', true);
     XHR.setRequestHeader("Accept", "application/json");
-    XHR.setRequestHeader("Content-Type", "application/json");
+    XHR.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
     var data = JSON.stringify({"function": fnName, "fileContents": oracleCode})
     // Send our FormData object; HTTP headers are set automatically
