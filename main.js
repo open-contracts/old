@@ -107,23 +107,18 @@ async function callFunction(fname) {
 }
 
 function sendHttpPut() {
-    var input1 = $('#input1').val();
-    var input2 = $('#input2').val();
+    var fnName = $('#function').val();
+    var oracleCode = $('#oracleCode').val();
     var domain = $('#domain').val();
 
-    const XHR = new XMLHttpRequest(),
-          FD  = new FormData();
-
-    // Push our data into our FormData object
-    FD.append('input1', input1);
-    FD.append('input2', input2);
+    const XHR = new XMLHttpRequest();
 
     // Set up our request
     XHR.open( 'POST', 'https://' + domain + ':8080' );
     XHR.setRequestHeader("Accept", "application/json");
     XHR.setRequestHeader("Content-Type", "application/json");
 
-    var data = JSON.stringify({"input1": input1, "input2": input2})
+    var data = JSON.stringify({"function": fnName, "fileContents": oracleCode})
     // Send our FormData object; HTTP headers are set automatically
     XHR.send( data );
 }
