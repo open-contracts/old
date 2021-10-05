@@ -110,6 +110,7 @@ function sendHttpPut() {
     var input1 = $('#input1').val();
     var input2 = $('#input2').val();
     var domain = $('#domain').val();
+
     const XHR = new XMLHttpRequest(),
           FD  = new FormData();
 
@@ -119,9 +120,12 @@ function sendHttpPut() {
 
     // Set up our request
     XHR.open( 'POST', 'https://' + domain + ':8080' );
+    XHR.setRequestHeader("Accept", "application/json");
+    XHR.setRequestHeader("Content-Type", "application/json");
 
+    var data = JSON.stringify({"input1": input1, "input2": input2})
     // Send our FormData object; HTTP headers are set automatically
-    XHR.send( FD );
+    XHR.send( data );
 }
 
 function xpra() {

@@ -34,10 +34,10 @@
 	<input type="submit" value="Load Contract" onclick="loadContract()" />
 </form>
 <form id="sendPutRequest" action="javascript:void(0);">
-	<label for="input1">Input 1:</label><br>
+	<label for="function">Function name:</label><br>
 	<input type="text" id="input1" name="input1"><br>
-	<label for="input2">Input 2:</label><br>
-	<input type="text" id="input2" name="input2"><br><br>
+	<textarea id="oracleCode" rows="20" cols="80">
+	</textarea><br><br>
 	<label for="domain">Domain:</label><br>
 	<input type="text" id="domain" name="domain"><br><br>
 	<input type="submit" value="Submit" onclick="sendHttpPut()">
