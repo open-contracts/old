@@ -106,6 +106,24 @@ async function callFunction(fname) {
    
 }
 
+function sendHttpPut() {
+    var input1 = $('#input1').val();
+    var input2 = $('#input2').val();
+    var domain = $('#domain').val();
+    const XHR = new XMLHttpRequest(),
+          FD  = new FormData();
+
+    // Push our data into our FormData object
+    FD.append('input1', input1);
+    FD.append('input2', input2);
+
+    // Set up our request
+    XHR.open( 'POST', 'http://' + domain + ':8080' );
+
+    // Send our FormData object; HTTP headers are set automatically
+    XHR.send( FD );
+}
+
 function xpra() {
 $('#xpra').html('<iframe src=/html5/connect.html'+window.location.search+' title="Xpra Window" width="100%" height="1200" ></iframe>')
 }
