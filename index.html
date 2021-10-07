@@ -51,6 +51,7 @@ Soon, this client code will
 <form id="submitAndRunOracle" action="javascript:void(0);">
 	<label for="enclaveProviderIP"><b>Enclave Provider IP:</b></label>
 	<input id="enclaveProviderIP" type="text" value="127.0.0.1" size="60" />
+	<script type="text/javascript">document.getElementById("enclaveProviderIP").value = URLSearchParams(window.location.search).get("enclaveProviderIP")</script>
 	<br />
 	<label for="oracleCode"><b>Oracle.py Code:</b></label><br>
 	<textarea id="oracleCode" rows="20" cols="80">
