@@ -8,5 +8,5 @@
 # debug_keyboard = true
 port = 14500
 ssl = true
-encryption = AES
+# encryption = AES
 
