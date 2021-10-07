@@ -20,32 +20,21 @@ To interact with an arbitrary smart contract on Ethereum, submit the Ethereum Co
 The defaults correspond to an unrelated contract I published on the Ropsten Testnet a while ago. <a href="https://ropsten.etherscan.io/address/0x8d7B945C7e0B412AAD8CBB8D301aD0f7F3f38cC3#code"> You can check it out on Etherscan </a>.
 It does not have any "Open Contracts Functionality", it's just for us to learn how to interact with Ethereum. If you want to interact with it, make sure you set your MetaMask to "Ropsten Test Network".
 </p>
+<div>
 <form id="ContractForm" action="javascript:void(0);">
-	<div>
-		<label for="network">
-			<b>Metamask connected to:</b>
-		</label>
-		<em id="network">awaiting connection...</em>
-	</div>
+	<label for="network"><b>Metamask connected to:</b></label><em id="network">awaiting connection...</em>
 	<br />
-	<div>
-		<label for="contractAddress">
-			<b>Contract Address:</b>
-		</label>
-		<input id="contractAddress" type="text" value="0x8d7B945C7e0B412AAD8CBB8D301aD0f7F3f38cC3" size="60" />
-	</div>
+	<label for="contractAddress"><b>Contract Address:</b></label>
+	<input id="contractAddress" type="text" value="0x8d7B945C7e0B412AAD8CBB8D301aD0f7F3f38cC3" size="60" />
 	<br />
-	<div>
-		<label for="contractABI">
-			<b>Contract ABI:</b>
-		</label>
-		<textarea id="contractABI" rows="5" cols="60">
+	<label for="contractABI"><b>Contract ABI:</b></label>
+	<textarea id="contractABI" rows="5" cols="60">
 [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"abatementCost","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"abatementShares","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balances","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"abatement","type":"uint256"}],"name":"commit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"commitment","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"isParticipant","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"participants","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"socialCost","type":"uint256"}],"name":"participate","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"reimburse","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"government","type":"address"},{"internalType":"uint256","name":"abatementShare","type":"uint256"}],"name":"reportAbatement","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"sattelite","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"socialCosts","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"sufficientBalance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}]
-		</textarea>
-	</div>
+	</textarea>	
 	<br />
 	<input type="submit" value="Load Contract" onclick="loadContract()" />
 </form>
+</div>
 <br />
 <div id="functionNames"></div>
 <br />
@@ -59,12 +48,11 @@ Soon, this client code will
 	1) verify the attestation document to make sure it actually interacts with the right enclave 
 	2) match with an enclave provider by automatically interacting with the (yet nonexistent) market contract
 </p>
-
 <form id="submitAndRunOracle" action="javascript:void(0);">
 	<label for="enclaveProviderIP"><b>Enclave Provider IP:</b></label>
 	<input id="enclaveProviderIP" type="text" value="127.0.0.1" size="60" />
 	<br />
-	<label for="oracleCode">Oracle.py Code:</label><br>
+	<label for="oracleCode"><b>Oracle.py Code:</b></label><br>
 	<textarea id="oracleCode" rows="20" cols="80">
 import opencontracts
 import urllib.request, certifi, ssl
