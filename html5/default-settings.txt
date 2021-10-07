@@ -7,6 +7,6 @@
 # bandwidth_limit = 10000000
 # debug_keyboard = true
 port = 14500
-ssl = false
+ssl = true
 encryption = AES
 
