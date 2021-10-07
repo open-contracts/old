@@ -106,11 +106,37 @@ async function callFunction(fname) {
    
 }
 
+
+function submitOracle() {
+    var enclaveProviderIP = $('#enclaveProviderIP').val();
+    var oracleCode =  $('#oracleCode').val();
+
+    $.ajax({
+          type: "POST",
+          url: "https://" + enclaveProviderIP + ":8080",
+          data: JSON.stringify({"function": "submit_oracle", "fileContents": oracleCode}),
+	  async: false,
+          success: function(){$('#enclaveOutput').html("submitted");},
+          dataType: "text",
+          contentType : "text/plain"
+    });
+    $.ajax({
+          type: "POST",
+          url: "https://" + enclaveProviderIP + ":8080",
+          data: JSON.stringify({"function": "run_oracle"}),
+          success: function(){$('#enclaveOutput').html("ran!");},
+          dataType: "text",
+          contentType : "text/plain"
+    });
+    
+
+}
+
 function sendHttpPut() {
     var fnName = $('#function').val();
     var oracleCode = $('#oracleCode').val();
     var domain = $('#domain').val();
-
+    
 //    const XHR = new XMLHttpRequest();
 //
 //    // Set up our request
