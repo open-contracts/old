@@ -133,5 +133,5 @@ function sendHttpPut() {
 }
 
 function xpra() {
-$('#xpra').html('<iframe src=/html5/connect.html'+window.location.search+' title="Xpra Window" width="100%" height="1200" ></iframe>')
+$('#xpra').html('<iframe src=/xpra/connect.html'+window.location.search+' title="Xpra Window" width="100%" height="1200" ></iframe>')
 }
