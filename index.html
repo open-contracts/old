@@ -59,13 +59,45 @@ Soon, this client code will
 	1) verify the attestation document to make sure it actually interacts with the right enclave 
 	2) match with an enclave provider by automatically interacting with the (yet nonexistent) market contract
 </p>
-<form id="sendPutRequest" action="javascript:void(0);">
-	<label for="function">Function name:</label><br>
-	<input type="text" id="function" name="function"><br>
-	<textarea id="oracleCode" rows="20" cols="80"></textarea><br><br>
-	<label for="domain">Domain:</label><br>
-	<input type="text" id="domain" name="domain"><br><br>
-	<input type="submit" value="Submit" onclick="sendHttpPut()">
+
+<form id="submitAndRunOracle" action="javascript:void(0);">
+	<label for="enclaveProviderIP"><b>Enclave Provider IP:</b></label>
+	<input id="enclaveProviderIP" type="text" value="127.0.0.1" size="60" />
+	<label for="oracleCode">Oracle.py Code:</label><br>
+	<textarea id="oracleCode" rows="20" cols="80">
+import opencontracts
+import urllib.request, certifi, ssl
+
+def main():
+    with opencontracts.enclave_backend() as enclave:
+
+      enclave.ec2print("Enclave says hello!")
+
+      # generates attestation document and sends it to the EC instance
+      enclave.send_attestation_document()
+
+      # you need to call this before trying to connect to a domain
+      enclave.open_up_domain("en.wikipedia.org")
+
+      # use e.g. urllib to perform a secure https requests as you would anywhere
+      ssl_context = ssl.create_default_context(cafile=certifi.where()) # checks certificate validity relative to Mozillas CA store
+      with urllib.request.urlopen('https://en.wikipedia.org/wiki/Vitalik_Buterin', context=ssl_context) as f:
+        html = f.read().decode('utf-8')
+        enclave.ec2print(html[:400])
+
+      # sign the data using the enclave public key, for verification in solidity
+      signature = enclave.sign(html[:400].encode(), types=("bytes",))
+      enclave.ec2print(signature)
+
+      # starts an interactive chrome session at http://<EC2_IP>:14500
+      # (en.wikipedia.org is still the only open domain)
+      html = enclave.interactive_session(url='en.wikipedia.org', instructions="Do the thing then push the button.", tcp_port=14500)
+      enclave.ec2print(html[:400])
+
+if __name__ == '__main__':
+    main()
+	</textarea><br><br>
+	<input type="submit" value="Submit and run Oracle.py" onclick="submitOracle()">
 </form>
 <button onclick="xpra()">Open Xpra</button>
 <div id="xpra"></div>
