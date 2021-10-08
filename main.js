@@ -109,6 +109,29 @@ async function callFunction(fname) {
 
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
+    var oracleCode =  $('#oracleCode').val();	
+    var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
+    ws.onopen = function(event) {
+        console.log("WebSocket is open now."); 
+	// todo: request and verify attestation doc
+        ws.send(JSON.stringify({fname: 'submit_oracle', oracleCode: oracleCode}));
+        ws.send(JSON.stringify({fname: 'run_oracle'}));
+    };
+    ws.onmessage = function (event) {
+        data = JSON.parse(event.data);
+	if (data['fname'] == "print") {
+		document.getElementById("results").innerHTML += data['string'] + "<br>";
+	} else if (data['fname'] == "xpra") {
+		document.getElementById("xpra").innerHTML = "Opened " + data['url'] + " in interactive session <br>"
+		document.getElementById("xpra").innerHTML += '<iframe src='+data['session']+' title="Xpra Window" width="100%" height="1200" ></iframe>'
+	}
+    };
+}
+
+
+
+function OLDsubmitOracle() {
+    var enclaveProviderIP = $('#enclaveProviderIP').val();
     var oracleCode =  $('#oracleCode').val();
 
     $.ajax({
