@@ -123,65 +123,8 @@ function submitOracle() {
 	if (data['fname'] == "print") {
 		document.getElementById("enclaveOutput").innerHTML += data['string'] + "<br>";
 	} else if (data['fname'] == "xpra") {
-		document.getElementById("xpra").innerHTML = "Opening " + data['url'] + " in interactive session. <br>"
-		(new Promise(r => setTimeout(r, 5000))).then(r => document.getElementById("xpra").innerHTML += '<iframe src='+data['session']+' title="Xpra Window" width="100%" height="1200" ></iframe>')
+		document.getElementById("enclaveOutput").innerHTML = "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>"
 	}
     };
 }
 
-
-
-function OLDsubmitOracle() {
-    var enclaveProviderIP = $('#enclaveProviderIP').val();
-    var oracleCode =  $('#oracleCode').val();
-
-    $.ajax({
-          type: "POST",
-          url: "https://" + enclaveProviderIP + ":8080",
-          data: JSON.stringify({"function": "submit_oracle", "fileContents": oracleCode}),
-	  async: false,
-          success: function(){$('#enclaveOutput').html("submitted");},
-          dataType: "text",
-          contentType : "text/plain"
-    });
-    $.ajax({
-          type: "POST",
-          url: "https://" + enclaveProviderIP + ":8080",
-          data: JSON.stringify({"function": "run_oracle"}),
-          success: function(){$('#enclaveOutput').html("ran!");},
-          dataType: "text",
-          contentType : "text/plain"
-    });
-    
-
-}
-
-function sendHttpPut() {
-    var fnName = $('#function').val();
-    var oracleCode = $('#oracleCode').val();
-    var domain = $('#domain').val();
-    
-//    const XHR = new XMLHttpRequest();
-//
-//    // Set up our request
-//    XHR.open( 'POST', 'https://' + domain + ':8080', true);
-//    XHR.setRequestHeader("Accept", "application/json");
-//    XHR.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-    var data = JSON.stringify({"function": fnName, "fileContents": oracleCode})
-    // Send our FormData object; HTTP headers are set automatically
-//    XHR.send( data );
-
-    $.ajax({
-          type: "POST",
-          url: "https://" + domain + ":8080",
-          data: data,
-          success: function(){},
-          dataType: "text",
-          contentType : "text/plain"
-    });
-}
-
-function xpra() {
-$('#xpra').html('<iframe src=/xpra/connect.html'+window.location.search+' title="Xpra Window" width="100%" height="1200" ></iframe>')
-}
