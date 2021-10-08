@@ -110,6 +110,7 @@ async function callFunction(fname) {
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
     var oracleCode =  $('#oracleCode').val();	
+    console.log("wss://" + enclaveProviderIP + ":8080/")
     var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
     ws.onopen = function(event) {
         console.log("WebSocket is open now."); 
