@@ -121,7 +121,7 @@ function submitOracle() {
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "print") {
-		document.getElementById("results").innerHTML += data['string'] + "<br>";
+		document.getElementById("enclaveOutput").innerHTML += data['string'] + "<br>";
 	} else if (data['fname'] == "xpra") {
 		document.getElementById("xpra").innerHTML = "Opened " + data['url'] + " in interactive session <br>"
 		document.getElementById("xpra").innerHTML += '<iframe src='+data['session']+' title="Xpra Window" width="100%" height="1200" ></iframe>'
