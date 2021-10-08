@@ -123,7 +123,7 @@ function submitOracle() {
 	if (data['fname'] == "print") {
 		document.getElementById("enclaveOutput").innerHTML += data['string'] + "<br>";
 	} else if (data['fname'] == "xpra") {
-		document.getElementById("enclaveOutput").innerHTML = "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>"
+		document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>"
 	}
     };
 }
