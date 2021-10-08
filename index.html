@@ -14,7 +14,7 @@ The first section requires Metamask. It allows general purpose client<->blockcha
 The second section allows the client to securely interact with the API exposed by the nitro enclave running our <a href="https://github.com/open-contracts/default-image"> default-image/oracle_enclave</a> code.<br>
 In the end, the two will be merged to allow the user to interact with an "Open Contract", which is an Ethereum smart contract containing a specific function which only accepts output signed by an Oracle Enclave executing a particular oracle.py.
 </p>
-<hr>
+<hr><hr>
 <p>
 To interact with an arbitrary smart contract on Ethereum, submit the Ethereum Contract Address and Contract ABI via the form below, which can be found e.g. on Etherscan.io.
 The defaults correspond to an unrelated contract I published on the Ropsten Testnet a while ago. <a href="https://ropsten.etherscan.io/address/0x8d7B945C7e0B412AAD8CBB8D301aD0f7F3f38cC3#code"> You can check it out on Etherscan </a>.
@@ -40,7 +40,7 @@ It does not have any "Open Contracts Functionality", it's just for us to learn h
 <br />
 <div id="currentFunction"></div>
 <div id="results"></div>
-<hr>
+<hr><hr>
 <p>
 This section interacts with the API exposed by the server.py running inside the  <a href="https://github.com/open-contracts/default-image">oracle_enclave</a>.
 For now, users can submit and launch arbitrary oracle.py code, and receive output printed by the enclave.
@@ -89,5 +89,8 @@ if __name__ == '__main__':
 	</textarea><br><br>
 	<input type="submit" value="Submit and run Oracle.py" onclick="submitOracle()">
 </form>
-<div id="enclaveOutput" style="width:500px;height:100px;border:1px solid #000;"><u>Enclave Output:</u><br></div>
+<u>Enclave Output:</u><br>
+<hr><hr>
+<div id="enclaveOutput"></div>
+<hr><hr>
 <div id="xpra"></div>
