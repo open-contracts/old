@@ -124,7 +124,7 @@ function submitOracle() {
 		document.getElementById("enclaveOutput").innerHTML += data['string'] + "<br>";
 	} else if (data['fname'] == "xpra") {
 		document.getElementById("xpra").innerHTML = "Opening " + data['url'] + " in interactive session. <br>"
-		(new Promise(r => setTimeout(r, 5000))).then(document.getElementById("xpra").innerHTML += '<iframe src='+data['session']+' title="Xpra Window" width="100%" height="1200" ></iframe>')
+		(new Promise(r => setTimeout(r, 5000))).then(r => document.getElementById("xpra").innerHTML += '<iframe src='+data['session']+' title="Xpra Window" width="100%" height="1200" ></iframe>')
 	}
     };
 }
