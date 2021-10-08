@@ -115,8 +115,8 @@ function submitOracle() {
     ws.onopen = function(event) {
         console.log("WebSocket is open now."); 
 	// todo: request and verify attestation doc
-        ws.send(JSON.stringify({function: 'submit_oracle', fileContents: oracleCode}));
-        ws.send(JSON.stringify({function: 'run_oracle'}));
+        ws.send(JSON.stringify({fname: 'submit_oracle', fileContents: oracleCode}));
+        ws.send(JSON.stringify({fname: 'run_oracle'}));
     };
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
