@@ -120,21 +120,21 @@ function submitOracle() {
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "attestation") {
-	   // parse and verify attestation
+	   cose = window.atob(data['attestation']);
+           console.log(cose);
 	   trusted_connection = true;
 	}
+	if (trusted_connection) {
+            ws.onmessage = function (event) {
+                data = JSON.parse(event.data);
+                if (data['fname'] == "print") {
+                    document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
+                } else if (data['fname'] == "xpra") {
+                    document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>";
+                }
+            };
+            ws.send(JSON.stringify({fname: 'submit_oracle', fileContents: oracleCode}));
+            ws.send(JSON.stringify({fname: 'run_oracle'}));
+        };    
     };
-    if (trusted_connection) {
-        ws.onmessage = function (event) {
-            data = JSON.parse(event.data);
-            if (data['fname'] == "print") {
-                document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
-            } else if (data['fname'] == "xpra") {
-                document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>";
-            }
-        };
-        ws.send(JSON.stringify({fname: 'submit_oracle', fileContents: oracleCode}));
-        ws.send(JSON.stringify({fname: 'run_oracle'}));
-    };    
 }
-
