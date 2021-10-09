@@ -110,21 +110,33 @@ async function callFunction(fname) {
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
     var oracleCode =  $('#oracleCode').val();	
+    var trusted_connection = false;
     console.log("wss://" + enclaveProviderIP + ":8080/")
     var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
     ws.onopen = function(event) {
         console.log("WebSocket is open now."); 
-	// todo: request and verify attestation doc
-        ws.send(JSON.stringify({fname: 'submit_oracle', fileContents: oracleCode}));
-        ws.send(JSON.stringify({fname: 'run_oracle'}));
+	ws.send(JSON.stringify({fname: 'get_attestation'}));
     };
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
-	if (data['fname'] == "print") {
-		document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
-	} else if (data['fname'] == "xpra") {
-		document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>"
+	if {data['fname'] == "attestation"} {
+	   // parse and verify attestation
+	   trusted_connection = true;
 	}
     };
+    if (trusted_connection) {
+        ws.send(JSON.stringify({fname: 'submit_oracle', fileContents: oracleCode}));
+	ws.send(JSON.stringify({fname: 'run_oracle'}));
+	ws.onmessage = function (event) {
+            data = JSON.parse(event.data);
+	    if (data['fname'] == "print") {
+		    document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
+	    } else if (data['fname'] == "xpra") {
+		    document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>"
+	    }
+    }
+    };
+            
+        
 }
 
