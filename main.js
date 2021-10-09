@@ -134,7 +134,7 @@ function submitOracle() {
 	    } else if (data['fname'] == "xpra") {
 		    document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>"
 	    }
-    }
+        };
     };
             
         
