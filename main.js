@@ -115,7 +115,7 @@ function submitOracle() {
     var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
     ws.onopen = function(event) {
         console.log("WebSocket is open now."); 
-	ws.send(JSON.stringify({fname: 'get_attestation'}));
+        ws.send(JSON.stringify({fname: 'get_attestation'}));
     };
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
