@@ -125,8 +125,6 @@ function submitOracle() {
 	}
     };
     if (trusted_connection) {
-        ws.send(JSON.stringify({fname: 'submit_oracle', fileContents: oracleCode}));
-	ws.send(JSON.stringify({fname: 'run_oracle'}));
 	ws.onmessage = function (event) {
             data = JSON.parse(event.data);
 	    if (data['fname'] == "print") {
@@ -135,6 +133,8 @@ function submitOracle() {
 		    document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>"
 	    }
         };
+        ws.send(JSON.stringify({fname: 'submit_oracle', fileContents: oracleCode}));
+	ws.send(JSON.stringify({fname: 'run_oracle'}));
     };
             
         
