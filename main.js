@@ -119,7 +119,7 @@ function submitOracle() {
         ws.send(JSON.stringify({fname: 'run_oracle'}));
     };
     ws.onmessage = function (event) {
-        data = JSON.parse(event.data);
+        data = JSON.parse(window.atob(event.data));
 	if (data['fname'] == "print") {
 		document.getElementById("enclaveOutput").innerHTML += data['string'] + "<br>";
 	} else if (data['fname'] == "xpra") {
