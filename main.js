@@ -119,7 +119,7 @@ function submitOracle() {
     };
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
-	if {data['fname'] == "attestation"} {
+	if (data['fname'] == "attestation") {
 	   // parse and verify attestation
 	   trusted_connection = true;
 	}
