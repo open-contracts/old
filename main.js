@@ -140,7 +140,7 @@ function submitOracle() {
 	if (data['fname'] == "attestation") {
 	   RSAkey = ifValidExtractRSAkey(data['attestation']);
 	   console.log(RSAkey);
-	   trusted_connection = true;
+	   trusted_connection = false;
 	}
 	if (trusted_connection) {
             ws.onmessage = function (event) {
