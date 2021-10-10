@@ -136,7 +136,7 @@ async function ifValidExtractRSAkey(attestation_data) {
 }
 
 
-async function submitOracle() {
+function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
     var oracleCode =  $('#oracleCode').val();	
     var trusted_connection = false;
@@ -147,7 +147,7 @@ async function submitOracle() {
         console.log("WebSocket is open now."); 
         ws.send(JSON.stringify({fname: 'get_attestation'}));
     };
-    ws.onmessage = function (event) {
+    ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "attestation") {
 	   RSAkey = await ifValidExtractRSAkey(data['attestation']);
