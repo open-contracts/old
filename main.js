@@ -114,6 +114,14 @@ function hexStringToArrayBuffer(hexString) {
 }
 
 
+function b64toBuff(base64) {
+    var binary_string = window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {bytes[i] = binary_string.charCodeAt(i);}
+    return bytes.buffer;
+}
+
 function ifValidExtractRSAkey(attestation_data) {
     // validates attestation, and extracts enclave's RSA pubkey if succesfull
     const cose = hexStringToArrayBuffer(attestation_data);
@@ -125,9 +133,10 @@ function ifValidExtractRSAkey(attestation_data) {
     var CryptoKey = null;
     certificate.publicKey.export()
     .then(key=>window.crypto.subtle.exportKey("jwk", key))
-    .then(function(key){console.log(b64toBuff(key['x'])); return key})
-    .then(key=>COSE.verify(b64toBuff(key['x']), b64toBuff(key['y']), cose));
-    console.log(CryptoKey);
+    //.then(key=>console.log(b64toBuff(key['x'])))
+    //.then(function(key){console.log(key['x'], key['y'], cose); return key})
+    //.then(key=>COSE.verify(b64toBuff(key['x']), b64toBuff(key['y']), cose));
+    console.log(b64toBuff);
     return null;
 }
 
