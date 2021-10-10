@@ -1,5 +1,5 @@
 // credit to themighty1 @ TLSNotary
-// this file is not used by the extension, it serves as an input to to create cose.js with:
+// this file is not used by the website, it serves as an input to to create cose.js with:
 // browserify cose_source.js --standalone COSE > cose.js
 
 const cose = require('cose-js');
