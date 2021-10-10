@@ -120,8 +120,8 @@ function ifValidExtractRSAkey(attestation) {
     // validates attestation, and extracts enclave's RSA pubkey if succesfull
     var cose = hexStringToArrayBuffer(attestation);
     var cose_sign1_struct = CBOR.decode(cose);
-    var attestation_doc = CBOR.decode(cose_sign1_struct[2].buffer);
-    console.log(attestation_doc);
+    var array = new Uint8Array(cose_sign1_struct[2]);
+    var attestation_doc = CBOR.decode(array.buffer);
     return attestation_doc;
 }
 
