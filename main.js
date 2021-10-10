@@ -113,14 +113,13 @@ function hexStringToArrayBuffer(hexString) {
     return array.buffer;
 }
 
-
 function b64Url2Buff(b64urlstring) {
   return new Uint8Array(atob(b64urlstring.replace(/-/g, '+').replace(/_/g, '/')).split('').map(val => {
     return val.charCodeAt(0);
   }));
 }
 
-function ifValidExtractRSAkey(attestation_data) {
+async function ifValidExtractRSAkey(attestation_data) {
     // validates attestation, and extracts enclave's RSA pubkey if succesfull
     const cose = hexStringToArrayBuffer(attestation_data);
     const cose_sign1_struct = CBOR.decode(cose);
@@ -128,19 +127,16 @@ function ifValidExtractRSAkey(attestation_data) {
     const attestation_doc = CBOR.decode(array.buffer);
     console.log("ENCLAVE HASHES:-----------", attestation_doc['pcrs'])
     const certificate = new x509.X509Certificate(new Uint8Array(attestation_doc['certificate']));
-    var CryptoKey = null;
-    certificate.publicKey.export()
+    var valid = false;
+    await certificate.publicKey.export()
     .then(key=>window.crypto.subtle.exportKey("jwk", key))
     .then(function (key) {b64Url2Buff(key['y']); return key})
-    //.then(key=>console.log(b64Url2Buff(key['y'])))
-    //.then(function(key){console.log(key['x'], key['y'], cose); return key})
     .then(key=>COSE.verify(b64Url2Buff(key['x']), b64Url2Buff(key['y']), cose));
-    console.log(b64toBuff);
-    return null;
+    return true;
 }
 
 
-function submitOracle() {
+async function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
     var oracleCode =  $('#oracleCode').val();	
     var trusted_connection = false;
@@ -154,7 +150,7 @@ function submitOracle() {
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "attestation") {
-	   RSAkey = ifValidExtractRSAkey(data['attestation']);
+	   RSAkey = await ifValidExtractRSAkey(data['attestation']);
 	   console.log(RSAkey);
 	   trusted_connection = false;
 	}
