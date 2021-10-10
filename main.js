@@ -1,3 +1,4 @@
+import {CBOR} from "/cose.js"
 var provider = null;
 var user = null;
 var contract = null;
@@ -106,6 +107,15 @@ async function callFunction(fname) {
    
 }
 
+function b64ToArrayBuffer(base64) {
+    var binary_string = window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
 
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
@@ -120,8 +130,9 @@ function submitOracle() {
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "attestation") {
-	   cose = window.atob(data['attestation']);
-           console.log(cose);
+	   cose = b64ToArrayBuffer(data['attestation']);
+	   cbor1 = CBOR.decode(cose);
+           console.log(cbor1);
 	   trusted_connection = true;
 	}
 	if (trusted_connection) {
