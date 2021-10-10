@@ -120,11 +120,15 @@ function ifValidExtractRSAkey(attestation_data) {
     const cose_sign1_struct = CBOR.decode(cose);
     const array = new Uint8Array(cose_sign1_struct[2]);
     const attestation_doc = CBOR.decode(array.buffer);
+    console.log("ENCLAVE HASHES:-----------", attestation_doc['pcrs'])
     const certificate = new x509.X509Certificate(new Uint8Array(attestation_doc['certificate']));
-    console.log(certificate);
+    var CryptoKey = null;
+    certificate.publicKey.export()
+    .then(key=>window.crypto.subtle.exportKey("jwk",key))
+    .then(key=>COSE.verify(array.buffer, key['x'], key['y']));
+    console.log(CryptoKey);
     return attestation_doc;
 }
-
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
     var oracleCode =  $('#oracleCode').val();	
