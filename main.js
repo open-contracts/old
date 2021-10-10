@@ -124,7 +124,6 @@ function ifValidExtractRSAkey(attestation) {
     console.log(attestation_doc);
     return attestation_doc;
 }
-}
 
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
