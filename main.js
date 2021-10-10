@@ -115,12 +115,21 @@ function hexStringToArrayBuffer(hexString) {
     return array.buffer;
 }
 
+
+function ifValidExtractRSAkey(attestation) {
+    // validates attestation, and extracts enclave's RSA pubkey if succesfull
+    cose = hexStringToArrayBuffer(attestation);
+    cose_sign1_struct = CBOR.decode(cose);
+    attestation_doc = CBOR.decode(cose_sign1_struct[2]) 
+}
+
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
     var oracleCode =  $('#oracleCode').val();	
     var trusted_connection = false;
     console.log("wss://" + enclaveProviderIP + ":8080/")
     var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
+    var RSAkey = None
     ws.onopen = function(event) {
         console.log("WebSocket is open now."); 
         ws.send(JSON.stringify({fname: 'get_attestation'}));
@@ -128,9 +137,7 @@ function submitOracle() {
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "attestation") {
-	   cose = hexStringToArrayBuffer(data['attestation']);
-	   cbor1 = CBOR.decode(cose);
-           console.log(cbor1);
+	   RSAkey = ifValidExtractRSAkey(data['attestation'])
 	   trusted_connection = true;
 	}
 	if (trusted_connection) {
