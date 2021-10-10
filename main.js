@@ -128,10 +128,19 @@ async function ifValidExtractRSAkey(attestation_data) {
     console.log("ENCLAVE HASHES:-----------", attestation_doc['pcrs'])
     const certificate = new x509.X509Certificate(new Uint8Array(attestation_doc['certificate']));
     var valid = false;
+    // checks attestation signature
     await certificate.publicKey.export()
     .then(key=>window.crypto.subtle.exportKey("jwk", key))
     .then(function (key) {b64Url2Buff(key['y']); return key})
     .then(key=>COSE.verify(b64Url2Buff(key['x']), b64Url2Buff(key['y']), cose));
+    // checks certificate path
+    var certs = [];
+    for (var i=0; i<=attestation_doc['cabundle'].length; i++) {
+	    var cert = new x509.X509Certificate(new Uint8Array(attestation_doc['cabundle'][i]));
+	    certs.push(cert)
+    }
+    const chain = new x509.X509ChainBuilder({certificates: certs});
+    const items = await chain.build(certificate);
     return true;
 }
 
