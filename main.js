@@ -116,12 +116,15 @@ function hexStringToArrayBuffer(hexString) {
 }
 
 
-function ifValidExtractRSAkey(attestation) {
+function ifValidExtractRSAkey(attestation_data) {
     // validates attestation, and extracts enclave's RSA pubkey if succesfull
-    var cose = hexStringToArrayBuffer(attestation);
-    var cose_sign1_struct = CBOR.decode(cose);
-    var array = new Uint8Array(cose_sign1_struct[2]);
-    var attestation_doc = CBOR.decode(array.buffer);
+    const cose = hexStringToArrayBuffer(attestation_data);
+    const cose_sign1_struct = CBOR.decode(cose);
+    const array = new Uint8Array(cose_sign1_struct[2]);
+    const attestation_doc = CBOR.decode(array.buffer);
+    const certificate = new Uint8Array(attestation_doc['certificate']);
+    const b64encoded = btoa((new TextDecoder('utf8')).decode(certificate));
+    const parsed_cert = new x509.X509Certificate(b64encoded);
     console.log(COSE.verify);
     return attestation_doc;
 }
