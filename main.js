@@ -133,12 +133,13 @@ function ifValidExtractRSAkey(attestation_data) {
     var CryptoKey = null;
     certificate.publicKey.export()
     .then(key=>window.crypto.subtle.exportKey("jwk", key))
-    //.then(key=>console.log(b64toBuff(key['x'])))
+    .then(key=>console.log(b64toBuff(key['x']), b64toBuff(key['y'])))
     //.then(function(key){console.log(key['x'], key['y'], cose); return key})
     //.then(key=>COSE.verify(b64toBuff(key['x']), b64toBuff(key['y']), cose));
     console.log(b64toBuff);
     return null;
 }
+
 
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
