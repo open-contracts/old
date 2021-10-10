@@ -124,11 +124,12 @@ function ifValidExtractRSAkey(attestation_data) {
     const certificate = new x509.X509Certificate(new Uint8Array(attestation_doc['certificate']));
     var CryptoKey = null;
     certificate.publicKey.export()
-    .then(key=>window.crypto.subtle.exportKey("jwk",key))
-    .then(key=>COSE.verify(array.buffer, key['x'], key['y']));
+    .then(key=>window.crypto.subtle.exportKey("jwk", key))
+    .then(key=>COSE.verify(key['x'], key['y'], cose));
     console.log(CryptoKey);
-    return attestation_doc;
+    return null;
 }
+
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
     var oracleCode =  $('#oracleCode').val();	
