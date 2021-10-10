@@ -1,4 +1,3 @@
-import {CBOR} from "/cose.js"
 var provider = null;
 var user = null;
 var contract = null;
