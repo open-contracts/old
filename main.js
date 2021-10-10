@@ -118,10 +118,12 @@ function hexStringToArrayBuffer(hexString) {
 
 function ifValidExtractRSAkey(attestation) {
     // validates attestation, and extracts enclave's RSA pubkey if succesfull
-    cose = hexStringToArrayBuffer(attestation);
-    cose_sign1_struct = CBOR.decode(cose);
-    attestation_doc = CBOR.decode(cose_sign1_struct[2].buffer);
+    var cose = hexStringToArrayBuffer(attestation);
+    var cose_sign1_struct = CBOR.decode(cose);
+    var attestation_doc = CBOR.decode(cose_sign1_struct[2].buffer);
+    console.log(attestation_doc);
     return attestation_doc;
+}
 }
 
 function submitOracle() {
