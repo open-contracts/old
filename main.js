@@ -120,7 +120,8 @@ function ifValidExtractRSAkey(attestation) {
     // validates attestation, and extracts enclave's RSA pubkey if succesfull
     cose = hexStringToArrayBuffer(attestation);
     cose_sign1_struct = CBOR.decode(cose);
-    attestation_doc = CBOR.decode(cose_sign1_struct[2]) 
+    attestation_doc = CBOR.decode(cose_sign1_struct[2]);
+    return attestation_doc;
 }
 
 function submitOracle() {
@@ -129,7 +130,7 @@ function submitOracle() {
     var trusted_connection = false;
     console.log("wss://" + enclaveProviderIP + ":8080/")
     var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
-    var RSAkey = None
+    var RSAkey = null;
     ws.onopen = function(event) {
         console.log("WebSocket is open now."); 
         ws.send(JSON.stringify({fname: 'get_attestation'}));
@@ -137,7 +138,8 @@ function submitOracle() {
     ws.onmessage = function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "attestation") {
-	   RSAkey = ifValidExtractRSAkey(data['attestation'])
+	   RSAkey = ifValidExtractRSAkey(data['attestation']);
+	   console.log(RSAkey);
 	   trusted_connection = true;
 	}
 	if (trusted_connection) {
