@@ -122,6 +122,7 @@ function ifValidExtractRSAkey(attestation) {
     var cose_sign1_struct = CBOR.decode(cose);
     var array = new Uint8Array(cose_sign1_struct[2]);
     var attestation_doc = CBOR.decode(array.buffer);
+    console.log(COSE.verify);
     return attestation_doc;
 }
 
