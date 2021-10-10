@@ -64,9 +64,6 @@ def main():
 
       enclave.print("Enclave says hello!")
 
-      # generates attestation document and sends it to the EC instance
-      enclave.send_attestation_document()
-
       # you need to call this before trying to connect to a domain
       enclave.open_up_domain("en.wikipedia.org")
 
