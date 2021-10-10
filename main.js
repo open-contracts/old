@@ -108,9 +108,7 @@ async function callFunction(fname) {
 
 function hexStringToArrayBuffer(hexString) {
     var pairs = hexString.match(/[\dA-F]{2}/gi);
-    var integers = pairs.map(function(s) {
-        return parseInt(s, 16);
-    });
+    var integers = pairs.map(function(s) {return parseInt(s, 16);});
     var array = new Uint8Array(integers);
     return array.buffer;
 }
@@ -122,8 +120,12 @@ function ifValidExtractRSAkey(attestation_data) {
     const cose_sign1_struct = CBOR.decode(cose);
     const array = new Uint8Array(cose_sign1_struct[2]);
     const attestation_doc = CBOR.decode(array.buffer);
-    const certificate = new Uint8Array(attestation_doc['certificate']);
-    const b64encoded = btoa((new TextDecoder('utf8')).decode(certificate));
+    var certificate = new Uint8Array(attestation_doc['certificate']);
+    require(['attestation/asn1.js'], function(ASN1) {
+        certificate = AS1.decode(certificate).content();
+    });
+    console.log(certificate);
+    const b64encoded = btoa(certificate);
     const parsed_cert = new x509.X509Certificate(b64encoded);
     console.log(COSE.verify);
     return attestation_doc;
