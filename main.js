@@ -114,12 +114,10 @@ function hexStringToArrayBuffer(hexString) {
 }
 
 
-function b64toBuff(base64) {
-    var binary_string = window.atob(base64);
-    var len = binary_string.length;
-    var bytes = new Uint8Array(len);
-    for (var i = 0; i < len; i++) {bytes[i] = binary_string.charCodeAt(i);}
-    return bytes.buffer;
+function b64Url2Buff(b64urlstring) {
+  return new Uint8Array(atob(b64urlstring.replace(/-/g, '+').replace(/_/g, '/')).split('').map(val => {
+    return val.charCodeAt(0);
+  }));
 }
 
 function ifValidExtractRSAkey(attestation_data) {
@@ -133,10 +131,10 @@ function ifValidExtractRSAkey(attestation_data) {
     var CryptoKey = null;
     certificate.publicKey.export()
     .then(key=>window.crypto.subtle.exportKey("jwk", key))
-    .then(function (key) {console.log(key); return key})
-    .then(key=>console.log(b64toBuff(key['y'])))
+    .then(function (key) {b64Url2Buff(key['y']); return key})
+    //.then(key=>console.log(b64Url2Buff(key['y'])))
     //.then(function(key){console.log(key['x'], key['y'], cose); return key})
-    //.then(key=>COSE.verify(b64toBuff(key['x']), b64toBuff(key['y']), cose));
+    .then(key=>COSE.verify(b64Url2Buff(key['x']), b64Url2Buff(key['y']), cose));
     console.log(b64toBuff);
     return null;
 }
