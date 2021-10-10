@@ -1,3 +1,4 @@
+// copied from: https://unpkg.com/@lapo/asn1js/asn1.js
 // ASN.1 JavaScript decoder
 // Copyright (c) 2008-2020 Lapo Luchini <lapo@lapo.it>
 
