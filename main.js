@@ -199,7 +199,7 @@ async function decrypt(AESkey, json) {
     return JSON.parse(new TextDecoder().decode(decrypted));
 }
 
-function submitOracle() {
+function connectEnclave() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
     var oracleCode =  $('#oracleCode').val();	
     var trusted_connection = false;
