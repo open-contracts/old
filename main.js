@@ -178,7 +178,7 @@ async function extractContentIfValid(attestation_data) {
     return [ETHkey, AESkey, encryptedAESkey];
 }
 
-function encrypt(AESkey, json) {
+async function encrypt(AESkey, json) {
     var nonce = window.crypto.getRandomValues(new Uint8Array(12));
     var ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv: nonce}, AESkey, new TextDecoder().encode(JSON.stringify(json)));
     var encrypted = new Uint8Array([]);
@@ -188,7 +188,7 @@ function encrypt(AESkey, json) {
     return {fname: "encrypted", payload: encryptedB64};
 }
 
-function decrypt(AESkey, json) {
+async function decrypt(AESkey, json) {
     var encrypted = Base64.toUint8Array(json['payload']);
     var ciphertext = encrypted.slice(0, encrypted.length-12);
     var nonce = encrypted.slice(encrypted.length-12, encrypted.length);
