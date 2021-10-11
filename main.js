@@ -135,6 +135,7 @@ rfMCMQCi85sWBbJwKKXdS6BptQFuZbT73o/gBh1qUxl/nNr12UO8Yfwr6wPLb+6N
 IwLz3/Y=
 -----END CERTIFICATE-----`;
 
+
 // extracts pubkeys and enclave hash if attestation doc is valid
 async function extractContentIfValid(attestation_data) {
     // decode COSE_SIGN1 message
@@ -166,11 +167,15 @@ async function extractContentIfValid(attestation_data) {
 
     // extracts hash + pubkeys
     const hash = attestation_doc['pcrs'][0];
+    console.log(hash);
+    // TODO: Add hash ceck
     const ETHkey = attestation_doc['public_key'];
     const RSAraw = hexStringToArrayBuffer(new TextDecoder().decode(attestation_doc['user_data']));
     const RSAkey = await crypto.subtle.importKey('spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-256"}, true, ["encrypt"]);
-    console.log(RSAkey);
-    return [hash, ETHkey, RSAkey];
+    const AESkey = await crypto.subtle.generateKey({"name":"AES-GCM","length":256},true,['encrypt','decrypt']);
+    const rawAES = await crypto.subtle.exportKey('raw', AESkey);
+    const encryptedAESkey = await  await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES);
+    return [ETHkey, AESkey, encryptedAESkey];
 }
 
 
@@ -180,9 +185,9 @@ function submitOracle() {
     var trusted_connection = false;
     console.log("wss://" + enclaveProviderIP + ":8080/")
     var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
-    var hash = null;
     var ETHkey = null;
-    var RSAkey = null;
+    var AESkey = null;
+    var encryptedAESkey = null;
     ws.onopen = function(event) {
         console.log("WebSocket is open now."); 
         ws.send(JSON.stringify({fname: 'get_attestation'}));
@@ -190,8 +195,8 @@ function submitOracle() {
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "attestation") {
-	   [hash, ETHkey, RSAkey] = await extractContentIfValid(data['attestation']);
-	   console.log(hash, ETHkey, RSAkey);
+	   [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
+	   console.log(ETHkey, AESkey, encryptedAESkey);
 	   trusted_connection = false;
 	}
 	if (trusted_connection) {
@@ -208,4 +213,5 @@ function submitOracle() {
         };    
     };
 }
+
 
