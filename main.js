@@ -179,11 +179,21 @@ async function extractContentIfValid(attestation_data) {
 }
 
 function encrypt(AESkey, json) {
-    
+    var nonce =  = window.crypto.getRandomValues(new Uint8Array(12));
+    var ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv: nonce}, AESkey, new TextDecoder().encode(JSON.stringify(json)));
+    var encrypted = new Uint8Array([]);
+    encrypted.set(ciphertext);
+    encrypted.set(nonce, ciphertext.length);
+    var encryptedB64 = Base64.fromUint8Array(new Uint8Array(encrypted));
+    return {fname: "encrypted", payload: encryptedB64};
 }
 
 function decrypt(AESkey, json) {
-
+    var encrypted = Base64.toUint8Array(json['payload']);
+    var ciphertext = encrypted.slice(0, encrypted.length-12);
+    var nonce = encrypted.slice(encrypted.length-12, encrypted.length);
+    var decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce}, AESkey, ciphertext);
+    var json = JSON.parse(new TextDecoder().decode(decrypted));
 }
 
 function submitOracle() {
@@ -204,19 +214,22 @@ function submitOracle() {
 	if (data['fname'] == "attestation") {
 	   [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
 	   console.log(ETHkey, AESkey, encryptedAESkey);
-	   trusted_connection = false;
+	   trusted_connection = true;
 	}
 	if (trusted_connection) {
             ws.onmessage = function (event) {
                 data = JSON.parse(event.data);
+		if (data['fname'] == 'encrypted') {
+		    data = decrypt(AESkey, data);
+		}
                 if (data['fname'] == "print") {
                     document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
                 } else if (data['fname'] == "xpra") {
                     document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>";
                 }
             };
-            ws.send(JSON.stringify({fname: 'submit_oracle', fileContents: oracleCode}));
-            ws.send(JSON.stringify({fname: 'run_oracle'}));
+            ws.send(JSON.stringify(encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
+            ws.send(JSON.stringify(encrypt(AESkey, {fname: 'run_oracle'})));
         };    
     };
 }
