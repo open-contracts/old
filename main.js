@@ -218,7 +218,7 @@ function submitOracle() {
             [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
             console.log(ETHkey, AESkey, encryptedAESkey);
             ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
-	    var sd = JSON.stringify(encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode}));
+	    var sd = JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode}));
 	    console.log(sd);
             ws.send(sd);
             ws.send(JSON.stringify(encrypt(AESkey, {fname: 'run_oracle'})));
