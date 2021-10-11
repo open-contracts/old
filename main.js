@@ -178,6 +178,13 @@ async function extractContentIfValid(attestation_data) {
     return [ETHkey, AESkey, encryptedAESkey];
 }
 
+function encrypt(AESkey, json) {
+    
+}
+
+function decrypt(AESkey, json) {
+
+}
 
 function submitOracle() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
