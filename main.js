@@ -218,13 +218,11 @@ function submitOracle() {
             [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
             console.log(ETHkey, AESkey, encryptedAESkey);
             ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
-	    var sd = JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode}));
-	    console.log(sd);
-            ws.send(sd);
-            ws.send(JSON.stringify(encrypt(AESkey, {fname: 'run_oracle'})));
+            ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
+            ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
         }
 	if (data['fname'] == 'encrypted') {
-	    data = decrypt(AESkey, data);
+	    data = await decrypt(AESkey, data);
 	    if (data['fname'] == "print") {
                 document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
             } else if (data['fname'] == "xpra") {
