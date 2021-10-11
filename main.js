@@ -166,7 +166,9 @@ async function extractContentIfValid(attestation_data) {
 
     // extracts hash + pubkeys
     const hash = attestation_doc['pcrs'][0];
-    return hash;
+    const ETHkey = attestation_doc['public_key'];
+    const RSAkey = attestation_doc['user_data'];
+    return [hash, ETHkey, RSAkey];
 }
 
 
