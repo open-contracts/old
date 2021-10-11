@@ -171,14 +171,14 @@ async function extractContentIfValid(attestation_data) {
     // TODO: Add hash ceck
     const ETHkey = new TextDecoder().decode(attestation_doc['public_key']);
     const RSAraw = hexStringToArrayBuffer(new TextDecoder().decode(attestation_doc['user_data']));
-    const RSAkey = await crypto.subtle.importKey('spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-256"}, true, ["encrypt"]);
-    console.log(RSAraw, "<raw key>", RSAkey);
+    const RSAkey = await crypto.subtle.importKey('spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-1"}, true, ["encrypt"]);
     const AESkey = await crypto.subtle.generateKey({"name":"AES-GCM","length":256},true,['encrypt','decrypt']);
     const rawAES = new Uint8Array(await crypto.subtle.exportKey('raw', AESkey));
-    const encryptedAESkey = Base64.fromUint8Array(await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES));
+    const encryptedAESkey = await Base64.fromUint8Array(new Uint8Array(await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES)));
     //const encryptedAESkey = Base64.fromUint8Array(rawAES); // unencrypted
     return [ETHkey, AESkey, encryptedAESkey];
 }
+
 
 async function encrypt(AESkey, json) {
     var nonce = window.crypto.getRandomValues(new Uint8Array(12));
@@ -216,7 +216,6 @@ function connectEnclave() {
         data = JSON.parse(event.data);
         if (data['fname'] == "attestation") {
             [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
-            console.log(ETHkey, AESkey, encryptedAESkey);
             ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
