@@ -152,16 +152,17 @@ async function ifValidExtractRSAkey(attestation_data) {
     .then(key=>COSE.verify(b64Url2Buff(key['x']), b64Url2Buff(key['y']), cose));
 
     // checks certificate path
-    var certs = [];
+    var certs = [new x509.X509Certificate(rootcert)];
     const cabundle = attestation_doc['cabundle'];
-    for (var i=0; i<cabundle.length-1; i++) {
+    for (var i=1; i<cabundle.length; i++) {
         var cert = new Uint8Array(cabundle[i]);
         var cert = new x509.X509Certificate(cert);
         certs.push(cert);
     }
-    certs.push(new x509.X509Certificate(rootcert))
+    console.log(certs);
     const chain = new x509.X509ChainBuilder({certificates: certs});
     const items = await chain.build(certificate);
+    console.log(items);
     return true;
 }
 
