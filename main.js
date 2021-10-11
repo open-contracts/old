@@ -173,8 +173,10 @@ async function extractContentIfValid(attestation_data) {
     const RSAraw = hexStringToArrayBuffer(new TextDecoder().decode(attestation_doc['user_data']));
     const RSAkey = await crypto.subtle.importKey('spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-256"}, true, ["encrypt"]);
     const AESkey = await crypto.subtle.generateKey({"name":"AES-GCM","length":256},true,['encrypt','decrypt']);
-    const rawAES = await crypto.subtle.exportKey('raw', AESkey);
-    const encryptedAESkey = Base64.fromUint8Array(await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES)).replace(/(.{48})/g,'$1\n');
+    const rawAES = new Uint8Array(await crypto.subtle.exportKey('raw', AESkey));
+    console.log(rawAES);
+    //const encryptedAESkey = Base64.fromUint8Array(await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES)).replace(/(.{48})/g,'$1\n');
+    const encryptedAESkey = Base64.fromUint8Array(rawAES);
     return [ETHkey, AESkey, encryptedAESkey];
 }
 
