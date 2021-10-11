@@ -171,7 +171,7 @@ async function extractContentIfValid(attestation_data) {
     // TODO: Add hash ceck
     const ETHkey = new TextDecoder().decode(attestation_doc['public_key']);
     const RSAraw = hexStringToArrayBuffer(new TextDecoder().decode(attestation_doc['user_data']));
-    const RSAkey = await crypto.subtle.importKey('spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-1"}, true, ["encrypt"]);
+    const RSAkey = await crypto.subtle.importKey('spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-256"}, true, ["encrypt"]);
     const AESkey = await crypto.subtle.generateKey({"name":"AES-GCM","length":256},true,['encrypt','decrypt']);
     const rawAES = new Uint8Array(await crypto.subtle.exportKey('raw', AESkey));
     const encryptedAESkey = await Base64.fromUint8Array(new Uint8Array(await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES)));
