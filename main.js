@@ -174,7 +174,7 @@ async function extractContentIfValid(attestation_data) {
     const RSAkey = await crypto.subtle.importKey('spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-256"}, true, ["encrypt"]);
     const AESkey = await crypto.subtle.generateKey({"name":"AES-GCM","length":256},true,['encrypt','decrypt']);
     const rawAES = await crypto.subtle.exportKey('raw', AESkey);
-    const encryptedAESkey = await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES);
+    const encryptedAESkey = Base64.fromUint8Array(await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES));
     return [ETHkey, AESkey, encryptedAESkey];
 }
 
@@ -211,26 +211,21 @@ function submitOracle() {
     };
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
-	if (data['fname'] == "attestation") {
-	   [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
-	   console.log(ETHkey, AESkey, encryptedAESkey);
-	   trusted_connection = true;
-	}
-	if (trusted_connection) {
-            ws.onmessage = function (event) {
-                data = JSON.parse(event.data);
-		if (data['fname'] == 'encrypted') {
-		    data = decrypt(AESkey, data);
-		}
-                if (data['fname'] == "print") {
-                    document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
-                } else if (data['fname'] == "xpra") {
-                    document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>";
-                }
-            };
+        if (data['fname'] == "attestation") {
+            [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
+            console.log(ETHkey, AESkey, encryptedAESkey);
+            ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
             ws.send(JSON.stringify(encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
             ws.send(JSON.stringify(encrypt(AESkey, {fname: 'run_oracle'})));
-        };    
+        }
+	if (data['fname'] == 'encrypted') {
+	    data = decrypt(AESkey, data);
+	    if (data['fname'] == "print") {
+                document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
+            } else if (data['fname'] == "xpra") {
+                document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>";
+            }
+	}    
     };
 }
 
