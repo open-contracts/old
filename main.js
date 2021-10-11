@@ -180,6 +180,7 @@ function submitOracle() {
     var trusted_connection = false;
     console.log("wss://" + enclaveProviderIP + ":8080/")
     var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
+    var ETHkey = null;
     var RSAkey = null;
     ws.onopen = function(event) {
         console.log("WebSocket is open now."); 
@@ -188,8 +189,8 @@ function submitOracle() {
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "attestation") {
-	   const [hash, pubkey, RSAkey] = await extractContentIfValid(data['attestation']);
-	   console.log(hash, pubkey, RSAkey);
+	   [const hash, ETHkey, RSAkey] = await extractContentIfValid(data['attestation']);
+	   console.log(hash, ETHkey, RSAkey);
 	   trusted_connection = false;
 	}
 	if (trusted_connection) {
