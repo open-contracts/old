@@ -175,7 +175,6 @@ async function extractContentIfValid(attestation_data) {
     const AESkey = await crypto.subtle.generateKey({"name":"AES-GCM","length":256},true,['encrypt','decrypt']);
     const rawAES = new Uint8Array(await crypto.subtle.exportKey('raw', AESkey));
     const encryptedAESkey = await Base64.fromUint8Array(new Uint8Array(await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES)));
-    //const encryptedAESkey = Base64.fromUint8Array(rawAES); // unencrypted
     return [ETHkey, AESkey, encryptedAESkey];
 }
 
