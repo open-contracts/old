@@ -184,7 +184,7 @@ function submitOracle() {
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
 	if (data['fname'] == "attestation") {
-	   RSAkey = await ifValidExtractRSAkey(data['attestation']);
+	   RSAkey = await extractContentIfValid(data['attestation']);
 	   console.log(RSAkey);
 	   trusted_connection = false;
 	}
