@@ -135,7 +135,7 @@ rfMCMQCi85sWBbJwKKXdS6BptQFuZbT73o/gBh1qUxl/nNr12UO8Yfwr6wPLb+6N
 IwLz3/Y=
 -----END CERTIFICATE-----`;
 
-async function ifValidExtractRSAkey(attestation_data) {
+async function extractContentIfValid(attestation_data) {
     // decode COSE_SIGN1 message
     const cose = hexStringToArrayBuffer(attestation_data);
     const cose_sign1_struct = CBOR.decode(cose);
