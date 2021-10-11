@@ -135,6 +135,7 @@ rfMCMQCi85sWBbJwKKXdS6BptQFuZbT73o/gBh1qUxl/nNr12UO8Yfwr6wPLb+6N
 IwLz3/Y=
 -----END CERTIFICATE-----`;
 
+// extracts pubkeys and enclave hash if attestation doc is valid
 async function extractContentIfValid(attestation_data) {
     // decode COSE_SIGN1 message
     const cose = hexStringToArrayBuffer(attestation_data);
