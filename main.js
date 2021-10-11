@@ -135,6 +135,7 @@ rfMCMQCi85sWBbJwKKXdS6BptQFuZbT73o/gBh1qUxl/nNr12UO8Yfwr6wPLb+6N
 IwLz3/Y=
 -----END CERTIFICATE-----`;
 
+
 async function ifValidExtractRSAkey(attestation_data) {
     // validates attestation, and extracts enclave's RSA pubkey if succesfull
     const cose = hexStringToArrayBuffer(attestation_data);
@@ -143,7 +144,6 @@ async function ifValidExtractRSAkey(attestation_data) {
     const attestation_doc = CBOR.decode(array.buffer);
     console.log("ENCLAVE HASHES:-----------", attestation_doc['pcrs'])
     const certificate = new x509.X509Certificate(new Uint8Array(attestation_doc['certificate']));
-    var valid = false;
 
     // checks attestation signature
     await certificate.publicKey.export()
@@ -152,7 +152,8 @@ async function ifValidExtractRSAkey(attestation_data) {
     .then(key=>COSE.verify(b64Url2Buff(key['x']), b64Url2Buff(key['y']), cose));
 
     // checks certificate path
-    var certs = [new x509.X509Certificate(rootcert)];
+    root = new x509.X509Certificate(rootcert);
+    var certs = [root];
     const cabundle = attestation_doc['cabundle'];
     for (var i=1; i<cabundle.length; i++) {
         var cert = new Uint8Array(cabundle[i]);
@@ -162,9 +163,11 @@ async function ifValidExtractRSAkey(attestation_data) {
     console.log(certs);
     const chain = new x509.X509ChainBuilder({certificates: certs});
     const items = await chain.build(certificate);
-    console.log(items);
+    const validcertpath = await root.equal(items[items.length-1]);
+    console.log(validcertpath);
     return true;
 }
+
 
 
 function submitOracle() {
