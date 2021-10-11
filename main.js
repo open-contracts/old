@@ -167,7 +167,8 @@ async function extractContentIfValid(attestation_data) {
     // extracts hash + pubkeys
     const hash = attestation_doc['pcrs'][0];
     const ETHkey = attestation_doc['public_key'];
-    const RSAkey = attestation_doc['user_data'];
+    const RSAkey = crypto.subtle.importKey('spki', attestation_doc['user_data'], "RSA-OAEP", true, ["encrypt", "decrypt"]);
+    console.log(RSAkey);
     return [hash, ETHkey, RSAkey];
 }
 
