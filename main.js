@@ -196,7 +196,7 @@ async function decrypt(AESkey, json) {
     var ciphertext = encrypted.slice(0, encrypted.length-12);
     var nonce = encrypted.slice(encrypted.length-12, encrypted.length);
     var decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce}, AESkey, ciphertext);
-    var json = JSON.parse(new TextDecoder().decode(decrypted));
+    return JSON.parse(new TextDecoder().decode(decrypted));
 }
 
 function submitOracle() {
