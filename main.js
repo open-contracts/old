@@ -179,7 +179,7 @@ async function extractContentIfValid(attestation_data) {
 }
 
 function encrypt(AESkey, json) {
-    var nonce =  = window.crypto.getRandomValues(new Uint8Array(12));
+    var nonce = window.crypto.getRandomValues(new Uint8Array(12));
     var ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv: nonce}, AESkey, new TextDecoder().encode(JSON.stringify(json)));
     var encrypted = new Uint8Array([]);
     encrypted.set(ciphertext);
