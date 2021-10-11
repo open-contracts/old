@@ -167,10 +167,12 @@ async function extractContentIfValid(attestation_data) {
     // extracts hash + pubkeys
     const hash = attestation_doc['pcrs'][0];
     const ETHkey = attestation_doc['public_key'];
-    const RSAkey = crypto.subtle.importKey('spki', attestation_doc['user_data'], "RSA-OAEP", true, ["encrypt", "decrypt"]);
-    console.log(RSAkey);
+    var RSAkey = attestation_doc['user_data'];
+    RSAkey = crypto.subtle.importKey('spki', RSAkey.buffer, {name: "RSA-OAEP", hash: "SHA-256"}, true, ["encrypt", "decrypt"]);
+    console.log(await RSAkey);
     return [hash, ETHkey, RSAkey];
 }
+
 
 
 function submitOracle() {
