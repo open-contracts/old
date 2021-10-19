@@ -207,7 +207,7 @@ async function decrypt(AESkey, json) {
 async function getOracleCode() {
     var oracleBundleLink = $('#oracleBundle').val();
     var oracleUrl = new URL(oracleBundleLink);
-    var response = await fetch(oracleUrl, {"method": "GET", "mode": "cors"})
+    var response = await fetch(oracleUrl)
     var buffer = response.arrayBuffer();
     return bufferToBase64(buffer);
 }
