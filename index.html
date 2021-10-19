@@ -59,38 +59,9 @@ Soon, this client code will
 	<input id="enclaveProviderIP" type="text" value="127.0.0.1" size="60" />
 	<script type="text/javascript">document.getElementById("enclaveProviderIP").value = new URLSearchParams(window.location.search).get("enclaveProviderIP")</script>
 	<br />
-	<label for="oracleCode"><b>Oracle.py Code:</b></label><br>
-	<textarea id="oracleCode" rows="20" cols="80">
-import opencontracts
-import urllib.request, certifi, ssl
-
-def main():
-    with opencontracts.enclave_backend() as enclave:
-
-      enclave.print("Enclave says hello!")
-
-      # you need to call this before trying to connect to a domain
-      enclave.open_up_domain("en.wikipedia.org")
-
-      # use e.g. urllib to perform a secure https requests as you would anywhere
-      ssl_context = ssl.create_default_context(cafile=certifi.where()) # checks certificate validity relative to Mozillas CA store
-      with urllib.request.urlopen('https://en.wikipedia.org/wiki/Vitalik_Buterin', context=ssl_context) as f:
-        html = f.read().decode('utf-8')
-        enclave.print(html[:400])
-
-      # sign the data using the enclave public key, for verification in solidity
-      signature = enclave.sign(html[:400].encode(), types=("bytes",))
-      enclave.print(signature)
-
-      # starts an interactive chrome session at http://<EC2_IP>:14500
-      # (en.wikipedia.org is still the only open domain)
-      html = enclave.interactive_session(url='en.wikipedia.org', instructions="Do the thing then push the button.", tcp_port=14500)
-      enclave.print(html[:400])
-
-if __name__ == '__main__':
-    main()
-	</textarea><br><br>
-	<input type="submit" value="Submit and run Oracle.py" onclick="connectEnclave()">
+	<label for="oracleBundle"><b>Oracle Bundle:</b></label>
+    <input id="oracleBundle" type="text" value="https://github.com/open-contracts/sample-contract/raw/main/bundle/oracle_bundle.zip" size="60" /><br>
+	<input type="submit" value="Submit" onclick="connectEnclave()">
 </form>
 <u>Enclave Output:</u><br>
 <hr>

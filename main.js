@@ -119,6 +119,12 @@ function b64Url2Buff(b64urlstring) {
   }));
 }
 
+function bufferToBase64(buffer) {
+    return btoa(new Uint8Array(buffer).reduce((data, byte)=> {
+      return data + String.fromCharCode(byte);
+    }, ''));
+}
+
 
 const rootcert = `-----BEGIN CERTIFICATE-----
 MIICETCCAZagAwIBAgIRAPkxdWgbkK/hHUbMtOTn+FYwCgYIKoZIzj0EAwMwSTEL
@@ -198,9 +204,17 @@ async function decrypt(AESkey, json) {
     return JSON.parse(new TextDecoder().decode(decrypted));
 }
 
+async function getOracleCode() {
+    var oracleBundleLink = $('#oracleBundle').val();
+    var oracleUrl = new URL(oracleBundleLink);
+    var response = await fetch(oracleUrl, {"method": "GET"})
+    var buffer = response.arrayBuffer();
+    return bufferToBase64(buffer);
+}
+
 function connectEnclave() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
-    var oracleCode =  $('#oracleCode').val();	
+    // var oracleCode =  getOracleString(); // $('#oracleCode').val();	
     var trusted_connection = false;
     console.log("wss://" + enclaveProviderIP + ":8080/")
     var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
@@ -216,7 +230,7 @@ function connectEnclave() {
         if (data['fname'] == "attestation") {
             [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
             ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
-            ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
+            ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: await getOracleCode()})));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
         }
 	if (data['fname'] == 'encrypted') {
