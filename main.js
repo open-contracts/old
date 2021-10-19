@@ -208,7 +208,7 @@ async function getOracleCode() {
     var oracleBundleLink = $('#oracleBundle').val();
     var oracleUrl = new URL(oracleBundleLink);
     var response = await fetch(oracleUrl)
-    var buffer = response.arrayBuffer();
+    var buffer = await response.arrayBuffer();
     return bufferToBase64(buffer);
 }
 
@@ -228,9 +228,10 @@ function connectEnclave() {
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
         if (data['fname'] == "attestation") {
+            let oracleCode = await getOracleCode();
             [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
             ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
-            ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: await getOracleCode()})));
+            ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
         }
 	if (data['fname'] == 'encrypted') {
