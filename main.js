@@ -207,7 +207,7 @@ async function decrypt(AESkey, json) {
 async function getOracleCode() {
     var oracleBundleLink = $('#oracleBundle').val();
     var oracleUrl = new URL(oracleBundleLink);
-    var response = await fetch(oracleUrl, {"method": "GET"})
+    var response = await fetch(oracleUrl, {"method": "GET", "mode": "no-cors"})
     var buffer = response.arrayBuffer();
     return bufferToBase64(buffer);
 }
@@ -240,7 +240,7 @@ function connectEnclave() {
             } else if (data['fname'] == "xpra") {
                 document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>";
             }
-	}    
+	} 
     };
 }
 
