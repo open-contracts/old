@@ -247,6 +247,7 @@ function connectEnclave() {
                 form.addEventListener('submit', async function() {
                     form.input.disabled = true;
 		    var encrypted = JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: form.input.value, token: data['token']}));
+		    console.log(encrypted);
                     ws.send(encrypted);
                 })		
             } else if (data['fname'] == 'submit') {
