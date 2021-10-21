@@ -112,9 +112,10 @@ async function requestHubTransaction(nonce, calldata, oracleSignature, registryS
     console.log(nonce, calldata, oracleSignature, registrySignature);
 }
 
-async function signBytes32(signThisHexString) {
-    signature = await user.signMessage(ethers.utils.arrayify("0x" + signThisHexString));
+async function signHex(hexString) {
+    signature = await user.signMessage(ethers.utils.arrayify("0x" + hexString));
     console.log(signature);
+    return signature;
 }
 
 function hexStringToArrayBuffer(hexString) {
@@ -242,7 +243,7 @@ function connectEnclave() {
             [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
             trusted_connection = true;
             ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
-	    ws.send(JSON.stringify({fname: 'submit_signature', signature: await signBytes32(data['signThis'])}));
+	    ws.send(JSON.stringify({fname: 'submit_signature', signature: await signHex(data['signThis'])}));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
         }
