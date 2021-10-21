@@ -14,6 +14,7 @@ function init() {
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
   user = provider.getSigner();
   initialized = true;
+  signBytes32("4a951c30dca302b4e104c383ed2ef5d89565a1d6a8df267776d09adaa3df3126")
 }
 
 // executed by "Load Contract" button
@@ -104,6 +105,16 @@ async function callFunction(fname) {
      $('#results').html(error.message);
    }
    
+}
+
+
+async function requestHubTransaction(nonce, calldata, oracleSignature, registrySignature) {
+    console.log(nonce, calldata, oracleSignature, registrySignature);
+}
+
+async function signBytes32(signThisHexString) {
+    signature = await user.signMessage(ethers.utils.arrayify("0x" + signThisHexString));
+    console.log(signature);
 }
 
 function hexStringToArrayBuffer(hexString) {
@@ -226,10 +237,12 @@ function connectEnclave() {
     };
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
-        if (data['fname'] == "attestation") {
+        if (data['fname'] == "attestation" && !trusted_connection) {
             let oracleCode = await getOracleCode();
             [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
+            trusted_connection = true;
             ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
+	    ws.send(JSON.stringify({fname: 'submit_signature', signature: await signBytes32(data['signThis'])}));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
         }
@@ -241,8 +254,8 @@ function connectEnclave() {
                 document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + " target='_blank'> this link. </a><br>";
             } else if (data['fname'] == 'user_input') {
                 formID = Math.floor(Math.random() * 100000);
-                submitForm = '<form action="javascript:void(0);" id="' + formID + '"> <label for="input">' + data["message"] + '</label><br>'
-                submitForm += '<input type="text" id="input" name="input" value=""> <input type="submit" value="Submit" name="submit"> </form><br>';
+                submitForm = '<form action="javascript:void(0);" id="' + formID + '"> <label for="input">' + data["message"] + '</label>'
+                submitForm += '<input type="text" id="input" name="input" value=""> <input type="submit" value="Submit" name="submit"> </form>';
                 document.getElementById("enclaveOutput").innerHTML += submitForm;
                 form = document.getElementById(formID);
                 form.addEventListener('submit', async function() {
@@ -251,9 +264,8 @@ function connectEnclave() {
                     ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: form.input.value})));
                 })		
             } else if (data['fname'] == 'submit') {
-                document.getElementById("enclaveOutput").innerHTML += "Submit! Calldata: " + data['calldata'] + " Oracle Sig: " + data['oracleSignature'] + " Registry Sig: " + data['registrySignature'] + "<br>"
-            } else if (data['fname'] == 'shutdown') {
-                document.getElementById("enclaveOutput").innerHTML += "Shutdown.<br>"
+                document.getElementById("enclaveOutput").innerHTML += "Received oracle results. Requesting transaction to the Open Contracts Hub.";
+	        requestHubTransaction(data['nonce'], data['calldata'], data['oracleSignature'], data['registrySignature']);
             }
         } 
     };
