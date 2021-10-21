@@ -252,7 +252,7 @@ function connectEnclave() {
 		form = document.getElementById(data['token']);
 		form.addEventListener('submit', async function() {
 			form.input.disabled = true;
-			ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', token: data['token'], input: form.input.value})));
+			ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: form.input.value, token: data['token']})));
 		})		
 	    } else if (data['fname'] == 'submit') {
 	        document.getElementById("enclaveOutput").innerHTML += "Submit! Calldata: " + data['calldata'] + " Oracle Sig: " + data['oracleSignature'] + " Registry Sig: " + data['registrySignature'] + "<br>"
