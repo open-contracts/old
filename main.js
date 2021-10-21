@@ -239,7 +239,7 @@ function connectEnclave() {
 	    if (data['fname'] == "print") {
                 document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
             } else if (data['fname'] == "xpra") {
-                document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + " target="_blank"> this link. </a><br>";
+                document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + " target='_blank'> this link. </a><br>";
             } else if (data['fname'] == 'user_input') {
 		function userInput(context) {
 		    context.input.disabled=true;
