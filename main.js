@@ -250,9 +250,10 @@ function connectEnclave() {
 		submitForm += '<input type="text" id="input" name="input" value=""> <input type="submit" value="Submit"> </form><br>';
 		document.getElementById("enclaveOutput").innerHTML += submitForm;
 		form = document.getElementById(data['token']);
-		await Promise.resolve(() =>form.submit());
-		document.getElementById(data['token']).input.disabled = true;
-		ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', token: data['token'], input: form.input.value})));
+		form.addEventListener('submit', function() {
+			form.input.disabled = true;
+			ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', token: data['token'], input: form.input.value})));
+		})		
 	    } else if (data['fname'] == 'submit') {
 	        document.getElementById("enclaveOutput").innerHTML += "Submit! Calldata: " + data['calldata'] + " Oracle Sig: " + data['oracleSignature'] + " Registry Sig: " + data['registrySignature'] + "<br>"
 	    } else if (data['fname'] == 'shutdown') {
