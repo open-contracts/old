@@ -14,7 +14,6 @@ function init() {
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
   user = provider.getSigner();
   initialized = true;
-  signBytes32("4a951c30dca302b4e104c383ed2ef5d89565a1d6a8df267776d09adaa3df3126")
 }
 
 // executed by "Load Contract" button
