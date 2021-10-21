@@ -184,12 +184,6 @@ async function extractContentIfValid(attestation_data) {
     return [ETHkey, AESkey, encryptedAESkey];
 }
 
-var currentUserInput = null;
-function userInput(context) {
-    context.input.disabled=true;
-    currentUserInput = context.input.value;
-}
-
 async function encrypt(AESkey, json) {
     var nonce = window.crypto.getRandomValues(new Uint8Array(12));
     var data = new TextEncoder().encode(JSON.stringify(json));
