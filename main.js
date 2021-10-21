@@ -239,8 +239,20 @@ function connectEnclave() {
 	    if (data['fname'] == "print") {
                 document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
             } else if (data['fname'] == "xpra") {
-                document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + "> this link. </a><br>";
-            }
+                document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + " target="_blank"> this link. </a><br>";
+            } else if (data['fname'] == 'user_input') {
+		function userInput(context) {
+		    context.input.disabled=true;
+		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', token: data['token'], input: context.input.value]})));
+		}
+		submitForm = '<form action="javascript:;" onsubmit="userInput(this)"> <label for="' + data['token'] + '">' + data["message"] + '</label><br>'
+		submitForm += '<input type="text" id="' + data['token'] + '" name="input" value=""> <input type="submit" value="Submit" onclick=> </form><br>';
+		document.getElementById("enclaveOutput").innerHTML += submitForm
+	    } else if (data['fname'] == 'submit') {
+	        document.getElementById("enclaveOutput").innerHTML += "Submit! Calldata: " + data['calldata'] + " Oracle Sig: " + data['oracleSignature'] + " Registry Sig: " + data['registrySignature'] + "<br>"
+	    } else if (data['fname'] == 'shutdown') {
+	        document.getElementById("enclaveOutput").innerHTML += "Shutdown.<br>"
+	    }
 	} 
     };
 }
