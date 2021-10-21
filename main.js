@@ -241,7 +241,7 @@ function connectEnclave() {
             } else if (data['fname'] == "xpra") {
                 document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + " target='_blank'> this link. </a><br>";
             } else if (data['fname'] == 'user_input') {
-		function userInput(context) {
+		async function userInput(context) {
 		    context.input.disabled=true;
 		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', token: data['token'], input: context.input.value})));
 		}
