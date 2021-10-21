@@ -243,7 +243,7 @@ function connectEnclave() {
             } else if (data['fname'] == 'user_input') {
 		function userInput(context) {
 		    context.input.disabled=true;
-		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', token: data['token'], input: context.input.value]})));
+		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', token: data['token'], input: context.input.value})));
 		}
 		submitForm = '<form action="javascript:;" onsubmit="userInput(this)"> <label for="' + data['token'] + '">' + data["message"] + '</label><br>'
 		submitForm += '<input type="text" id="' + data['token'] + '" name="input" value=""> <input type="submit" value="Submit" onclick=> </form><br>';
