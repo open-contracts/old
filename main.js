@@ -240,15 +240,15 @@ function connectEnclave() {
             } else if (data['fname'] == "xpra") {
                 document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + " target='_blank'> this link. </a><br>";
             } else if (data['fname'] == 'user_input') {
-                submitForm = '<form action="javascript:void(0);" id="'+data['token']+'"> <label for="input">' + data["message"] + '</label><br>'
-                submitForm += '<input type="text" id="input" name="input" value=""> <input type="submit" value="Submit"> </form><br>';
+		formID = Math.floor(Math.random() * 100000);
+                submitForm = '<form action="javascript:void(0);" id="' + formID + '"> <label for="input">' + data["message"] + '</label><br>'
+                submitForm += '<input type="text" id="input" name="input" value=""> <input type="submit" value="Submit" name="submit"> </form><br>';
                 document.getElementById("enclaveOutput").innerHTML += submitForm;
-                form = document.getElementById(data['token']);
+                form = document.getElementById(formID);
                 form.addEventListener('submit', async function() {
                     form.input.disabled = true;
-		    var encrypted = JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: form.input.value, token: data['token']}));
-		    console.log(encrypted);
-                    ws.send(encrypted);
+                    form.submit.disabled = true;
+                    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: form.input.value})));
                 })		
             } else if (data['fname'] == 'submit') {
                 document.getElementById("enclaveOutput").innerHTML += "Submit! Calldata: " + data['calldata'] + " Oracle Sig: " + data['oracleSignature'] + " Registry Sig: " + data['registrySignature'] + "<br>"
