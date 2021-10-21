@@ -250,7 +250,7 @@ function connectEnclave() {
 		submitForm += '<input type="text" id="input" name="input" value=""> <input type="submit" value="Submit"> </form><br>';
 		document.getElementById("enclaveOutput").innerHTML += submitForm;
 		form = document.getElementById(data['token']);
-		form.addEventListener('submit', function() {
+		form.addEventListener('submit', async function() {
 			form.input.disabled = true;
 			ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', token: data['token'], input: form.input.value})));
 		})		
