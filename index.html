@@ -15,17 +15,21 @@
 <script charset="utf-8" src="main.js" type="text/javascript"> </script>
 
 <p>
-This is the Open Contracts Dapp. Currently work in progress. Fornow, it is split into two sections, which will be merged in the end.<br>
-The first section requires Metamask. It allows general purpose client<->blockchain interaction with any smart contract on Ethereum. 
-The second section allows the client to securely interact with the API exposed by the nitro enclave running our <a href="https://github.com/open-contracts/default-image"> default-image/oracle_enclave</a> code.<br>
-In the end, the two will be merged to allow the user to interact with an "Open Contract", which is an Ethereum smart contract containing a specific function which only accepts output signed by an Oracle Enclave executing a particular oracle.py.
+For now, testnet only.
+Make sure you have Metamask installed and are connected to the Ropsten testnet. Also make sure you have some Ropsten Test Ether in your account to pay for Gas fees.
 </p>
-<hr><hr>
-<p>
-To interact with an arbitrary smart contract on Ethereum, submit the Ethereum Contract Address and Contract ABI via the form below, which can be found e.g. on Etherscan.io.
-The defaults correspond to an unrelated contract I published on the Ropsten Testnet a while ago. <a href="https://ropsten.etherscan.io/address/0x8d7B945C7e0B412AAD8CBB8D301aD0f7F3f38cC3#code"> You can check it out on Etherscan </a>.
-It does not have any "Open Contracts Functionality", it's just for us to learn how to interact with Ethereum from the browser. If you want to interact with it, make sure you set your MetaMask to "Ropsten Test Network".
-</p>
+
+<div>
+<form id="OpenContractForm" action="javascript:void(0);">
+	<label for="network"><b>Metamask connected to: </b></label><em id="network"> awaiting connection...</em>
+	<br />
+	<label for="contractGithub"><b>Contract Address:</b></label>
+	<input id="contractGithub" type="text" value="open-contracts/sample-contract" size="60" />
+	<br />
+	<input type="submit" value="Load Contract" onclick="loadOpenContract()" />
+</form>
+</div>
+
 <div>
 <form id="ContractForm" action="javascript:void(0);">
 	<label for="network"><b>Metamask connected to: </b></label><em id="network"> awaiting connection...</em>
