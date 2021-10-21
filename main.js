@@ -107,8 +107,8 @@ async function callFunction(fname) {
 }
 
 
-async function requestHubTransaction(nonce, calldata, oracleSignature, registrySignature) {
-    console.log(nonce, calldata, oracleSignature, registrySignature);
+async function requestHubTransaction(nonce, calldata, oracleSignature, oracleProvider, registrySignature) {
+    console.log(nonce, calldata, oracleSignature, oracleProvider, registrySignature);
 }
 
 async function signHex(hexString) {
@@ -265,7 +265,7 @@ function connectEnclave() {
                 })		
             } else if (data['fname'] == 'submit') {
                 document.getElementById("enclaveOutput").innerHTML += "Received oracle results. Requesting transaction to the Open Contracts Hub.";
-	        requestHubTransaction(data['nonce'], data['calldata'], data['oracleSignature'], data['registrySignature']);
+	        requestHubTransaction(data['nonce'], data['calldata'], data['oracleSignature'], data['oracleProvider'], data['registrySignature']);
             }
         } 
     };
