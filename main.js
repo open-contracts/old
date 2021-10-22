@@ -62,11 +62,11 @@ async function loadOpenContract() {
 }
 
 
-function getTokens() {
+async function getTokens() {
     await OPNtoken.gimmeSomeMoreOfDemCoins();
 }
 
-function allowHub() {
+async function allowHub() {
     await OPNtoken.increaseAllowance(OPNhub.address, 3);
 }
 
