@@ -2,6 +2,8 @@ var provider = null;
 var user = null;
 var contract = null;
 var initialized = false;
+var OPNtoken = null;
+var OPNhub = null;
 
 
 function init() {
@@ -17,7 +19,7 @@ function init() {
 }
 
 // executed by "Load Contract" button
-function loadContract() {
+async function loadOpenContract() {
   // Connect wallet if necessary
   if (!initialized) {
     if (window.ethereum) {
@@ -30,16 +32,25 @@ function loadContract() {
     }
   }
 	
-  // Load Contract
-  var contractAddress = $('#contractAddress').val();
-  var contractABI = JSON.parse($('#contractABI').val());
-  //++ const openContractABI = JSON.parse($('#oracle.py').val());
-  contract = new ethers.Contract(contractAddress, contractABI, provider).connect(user);
-  //++ const openContract = new opencontracts.Contract(contract, openContractABI)
+  // Load Open Contract
+  var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
+  contract = new ethers.Contract(await fetch(new URL(link + "/contract.address")),
+				 JSON.parse(await fetch(new URL(link + "/contract.abi"))), provider).connect(user);
+  OPNtoken = new ethers.Contract(await fetch('contracts/ropstenToken.address'), 
+				 JSON.parse(await fetch('contracts/ropstenToken.abi')), provider).connect(user);
+  OPNhub = new ethers.Contract(await fetch('contracts/ropstenHub.address'), 
+			       JSON.parse(await fetch('contracts/ropstenHub.abi')), provider).connect(user);
     
-  // add a button for every function in our contract
+  // add a button allowing the user to get OPN tokens
+  tokenActions = "<p>You need $OPN tokens to call an open contract function that performs an enclave computation. Get it here:</p>"; 
+  tokenActions += '<input type="submit" value="Get 10 $OPN" onclick="getTokens()" /><br />'
+  tokenActions = "<p>You need to allow the OpenContracts Hub to spend 3 $OPN tokens, otherwise it will reject the final transaction. Do that here:</p>"; 
+  tokenActions += '<input type="submit" value="Give Hub access to 3 $OPN" onclick="allowHub()" /><br />'	
+  $('#getTokens').html(tokenActions);
+	
+  // add a button for every function in the contract
   var contractFunctions = contract.interface.fragments;
-  var fnames = "<p><b>Functions:</b></p>";
+  var fnames = "<p><b>Contract Functions:</b></p>";
   for (let i = 1; i < contractFunctions.length; i++) {
     fname = contractFunctions[i].name;
     fnames += `<input id=${fname} type="submit" value="${fname}" onclick="showFunction(${fname})" />`;
@@ -49,6 +60,49 @@ function loadContract() {
   $('#currentFunction').html("");
   $('#results').html("");
 }
+
+
+function getTokens() {
+    await OPNtoken.gimmeSomeMoreOfDemCoins();
+}
+
+function allowHub() {
+    await OPNtoken.increaseAllowance(OPNhub.address, 3);
+}
+
+// executed by "Load Contract" button
+//function loadContract() {
+//  // Connect wallet if necessary
+//  if (!initialized) {
+//    if (window.ethereum) {
+//      init();
+//    } else {
+//      window.addEventListener('ethereum#initialized', setup, {
+//        once: true,
+//      });
+//      setTimeout(init, 30000); // 30 seconds
+//    }
+//  }
+	
+//  // Load Contract
+//  var contractAddress = $('#contractAddress').val();
+//  var contractABI = JSON.parse($('#contractABI').val());
+//  //++ const openContractABI = JSON.parse($('#oracle.py').val());
+//  contract = new ethers.Contract(contractAddress, contractABI, provider).connect(user);
+//  //++ const openContract = new opencontracts.Contract(contract, openContractABI)
+    
+//  // add a button for every function in our contract
+//  var contractFunctions = contract.interface.fragments;
+//  var fnames = "<p><b>Functions:</b></p>";
+//  for (let i = 1; i < contractFunctions.length; i++) {
+//    fname = contractFunctions[i].name;
+//    fnames += `<input id=${fname} type="submit" value="${fname}" onclick="showFunction(${fname})" />`;
+//	}
+//  fnames += "<br />"
+//  $('#functionNames').html(fnames);
+//  $('#currentFunction').html("");
+//  $('#results').html("");
+//}
 
 // executed by clicking on a function button
 function showFunction(fname) {
