@@ -56,11 +56,11 @@ Make sure you have Metamask installed and are connected to the Ropsten testnet. 
 <div id="results"></div>
 <hr><hr>
 <p>
-This section interacts with the API exposed by the server.py running inside the  <a href="https://github.com/open-contracts/default-image">oracle_enclave</a>.
-For now, users can submit and launch arbitrary oracle.py code, and receive output printed by the enclave.
-Soon, this client code will 
-	1) verify the attestation document to make sure it actually interacts with the right enclave 
-	2) match with an enclave provider by automatically interacting with the (yet nonexistent) market contract
+You may have noticed that calling the function with open contracts functionality above did not go through. This is because it can only be called by an Enclave! 
+You can connect with it below. You have to know the IP address of your enclave for now. You also have to start the EC2 script with the command:
+	<code>REGISTRY_ENCLAVE_IP=18.217.233.49 PROVIDER=0xc3e9591EDB56DcC951D50CD5002108e9d8968410 python3 ec2.py</code>
+Although you can change PROVIDER to any valid Ethereum address. The registry enclave with the IP 18.217.233.49 is the only one currently registered. 
+This command ensures your oracle obtains a registration from it.
 </p>
 <form id="submitAndRunOracle" action="javascript:void(0);">
 	<label for="enclaveProviderIP"><b>Enclave Provider IP:</b></label>
