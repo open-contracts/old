@@ -51,7 +51,7 @@ async function loadOpenContract() {
   tokenActions += '<input type="submit" value="Get 10 $OPN" onclick="getTokens()" /><br />'
   tokenActions = "<p>You need to allow the OpenContracts Hub to spend 3 $OPN tokens, otherwise it will reject the final transaction. Do that here:</p>"; 
   tokenActions += '<input type="submit" value="Give Hub access to 3 $OPN" onclick="allowHub()" /><br />'	
-  $('#getTokens').html(tokenActions);
+  $('#tokenActions').html(tokenActions);
 	
   // add a button for every function in the contract
   var contractFunctions = contract.interface.fragments;
