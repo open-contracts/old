@@ -34,12 +34,13 @@ async function loadOpenContract() {
 	
   // Load Open Contract
   var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
-  contract = new ethers.Contract(await fetch(new URL(link + "/contract.address")),
+  contract = new ethers.Contract(await (await fetch(new URL(link + "/contract.address"))).text(),
 				 JSON.parse(await (await fetch(new URL(link + "/contract.abi"))).text()), provider).connect(user);
-  OPNtoken = new ethers.Contract(await fetch('contracts/ropstenToken.address'), 
+  OPNtoken = new ethers.Contract(await (await fetch('contracts/ropstenToken.address')).text(), 
 				 JSON.parse(await (await fetch('contracts/ropstenToken.abi'))).text(), provider).connect(user);
-  OPNhub = new ethers.Contract(await fetch('contracts/ropstenHub.address'), 
+  OPNhub = new ethers.Contract(await (await fetch('contracts/ropstenHub.address')).text(), 
 			       JSON.parse(await (await fetch('contracts/ropstenHub.abi')).text()), provider).connect(user);
+    
     
   // add a button allowing the user to get OPN tokens
   tokenActions = "<p>You need $OPN tokens to call an open contract function that performs an enclave computation. Get it here:</p>"; 
