@@ -49,7 +49,7 @@ async function loadOpenContract() {
   // add a button allowing the user to get OPN tokens
   tokenActions = "<p>You need $OPN tokens to call an open contract function that performs an enclave computation. Get it here:</p>"; 
   tokenActions += '<input type="submit" value="Get 10 $OPN" onclick="getTokens()" /><br />'
-  tokenActions = "<p>You need to allow the OpenContracts Hub to spend 3 $OPN tokens, otherwise it will reject the final transaction. Do that here:</p>"; 
+  tokenActions += "<p>You need to allow the OpenContracts Hub to spend 3 $OPN tokens, otherwise it will reject the final transaction. Do that here:</p>"; 
   tokenActions += '<input type="submit" value="Give Hub access to 3 $OPN" onclick="allowHub()" /><br />'	
   $('#tokenActions').html(tokenActions);
 	
