@@ -275,7 +275,7 @@ async function decrypt(AESkey, json) {
 }
 
 async function getOracleCode() {
-    var oracleBundleLink = $('#oracleBundle').val();
+    var oracleBundleLink =  "https://raw.githubusercontent.com/" + $('#contractGithub').val() + "bundle/oracle_bundle.zip";
     var oracleUrl = new URL(oracleBundleLink);
     var response = await fetch(oracleUrl)
     var buffer = await response.arrayBuffer();
