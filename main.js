@@ -325,7 +325,9 @@ function connectEnclave() {
                 })		
             } else if (data['fname'] == 'submit') {
                 document.getElementById("enclaveOutput").innerHTML += "Received oracle results. Requesting transaction to the Open Contracts Hub.";
-	        requestHubTransaction("0x" + data['nonce'], "0x" + data['calldata'], data['oracleSignature'], data['oracleProvider'], data['registrySignature']);
+		hubTX = "<p>You need $OPN tokens to call an open contract function that performs an enclave computation. Get it here:</p>"; 
+                hubTX += `<input type="submit" value="Get 10 $OPN" onclick="requestHubTransaction(${'0x' + data['nonce']},${'0x' + data['calldata']},${data['oracleSignature']},${data['oracleProvider']},${data['registrySignature'])})" /><br />`;
+	        $('#hubTX').html(hubTX);
             }
         } 
     };
