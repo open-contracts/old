@@ -168,6 +168,7 @@ async function callFunction(fname) {
 
 async function requestHubTransaction(nonce, calldata, oracleSignature, oracleProvider, registrySignature) {
     console.log(nonce, calldata, oracleSignature, oracleProvider, registrySignature);
+    OPNhub.forwardCall(contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature);
 }
 
 async function signHex(hexString) {
