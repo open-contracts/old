@@ -34,14 +34,18 @@ async function loadOpenContract() {
 	
   // Load Open Contract
   var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
-  contract = new ethers.Contract(await (await fetch(new URL(link + "/contract.address"))).text(),
-				 JSON.parse(await (await fetch(new URL(link + "/contract.abi"))).text()), provider).connect(user);
-  OPNtoken = new ethers.Contract(await (await fetch('contracts/ropstenToken.address')).text(), 
-				 JSON.parse(await (await fetch('contracts/ropstenToken.abi'))).text(), provider).connect(user);
-  OPNhub = new ethers.Contract(await (await fetch('contracts/ropstenHub.address')).text(), 
-			       JSON.parse(await (await fetch('contracts/ropstenHub.abi')).text()), provider).connect(user);
-    
-    
+  contractAddress = await (await fetch(new URL(link + "/contract.address"))).text();
+  contractAbi = await (await fetch(new URL(link + "/contract.abi"))).text();
+  console.log(contractAddress);
+  console.log(JSON.parse(contractAbi));
+  contract = new ethers.Contract(contractAddress, JSON.parse(contractAbi), provider).connect(user);
+  tokenAddress = await (await fetch('contracts/ropstenToken.address')).text();
+  tokenABI = await (await fetch('contracts/ropstenToken.abi')).text();
+  OPNtoken = new ethers.Contract(tokenAddress, JSON.parse(tokenABI), provider).connect(user);
+  hubAddress = await (await fetch('contracts/ropstenHub.address')).text();
+  hubABI = await (await fetch('contracts/ropstenHub.abi')).text();
+  OPNhub = new ethers.Contract(hubAddress, JSON.parse(hubABI), provider).connect(user);
+       
   // add a button allowing the user to get OPN tokens
   tokenActions = "<p>You need $OPN tokens to call an open contract function that performs an enclave computation. Get it here:</p>"; 
   tokenActions += '<input type="submit" value="Get 10 $OPN" onclick="getTokens()" /><br />'
