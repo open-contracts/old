@@ -58,7 +58,7 @@ Make sure you have Metamask installed and are connected to the Ropsten testnet. 
 <p>
 You may have noticed that calling the function with open contracts functionality above did not go through. This is because it can only be called by an Enclave! 
 You can connect with it below. You have to know the IP address of your enclave for now. You also have to start the EC2 script with the command:
-	<code>REGISTRY_ENCLAVE_IP=18.217.233.49 PROVIDER=0xc3e9591EDB56DcC951D50CD5002108e9d8968410 python3 ec2.py</code>
+	<br><code>REGISTRY_ENCLAVE_IP=18.217.233.49 PROVIDER=0xc3e9591EDB56DcC951D50CD5002108e9d8968410 python3 ec2.py</code><br>
 Although you can change PROVIDER to any valid Ethereum address. The registry enclave with the IP 18.217.233.49 is the only one currently registered. 
 This command ensures your oracle obtains a registration from it.
 </p>
@@ -66,9 +66,6 @@ This command ensures your oracle obtains a registration from it.
 	<label for="enclaveProviderIP"><b>Enclave Provider IP:</b></label>
 	<input id="enclaveProviderIP" type="text" value="127.0.0.1" size="60" />
 	<script type="text/javascript">document.getElementById("enclaveProviderIP").value = new URLSearchParams(window.location.search).get("enclaveProviderIP")</script>
-	<br />
-	<label for="oracleBundle"><b>Oracle Bundle:</b></label>
-    <input id="oracleBundle" type="text" value="https://raw.githubusercontent.com/open-contracts/sample-contract/main/bundle/oracle_bundle.zip" size="60" /><br>
 	<input type="submit" value="Submit" onclick="connectEnclave()">
 </form>
 <u>Enclave Output:</u><br>
