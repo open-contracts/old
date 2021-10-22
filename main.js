@@ -331,7 +331,7 @@ function connectEnclave() {
 		oracleSig = data['oracleSignature'];
 		oracleProvider = data['oracleProvider'];
 		registrySig = data['registrySignature'];
-                hubTX += `<input type="submit" value="Get 10 $OPN" onclick="requestHubTransaction(${nonce},${calldata},${oracleSig},${oracleProvider},${registrySig})" /><br />`;
+                hubTX += `<input type="submit" value="Get 10 $OPN" onclick="requestHubTransaction('${nonce}','${calldata}','${oracleSig}','${oracleProvider}','${registrySig}')" /><br />`;
 	        $('#hubTX').html(hubTX);
             }
         } 
