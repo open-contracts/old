@@ -325,8 +325,13 @@ function connectEnclave() {
                 })		
             } else if (data['fname'] == 'submit') {
                 document.getElementById("enclaveOutput").innerHTML += "Received oracle results. Requesting transaction to the Open Contracts Hub.";
-		hubTX = "<p>You can now trigger the final transaction to the contract, via the Hub. Make sure you manually set a much higher gas price than the current default. If the TX doesnt complete because it runs out of gas, click the button again.</p>"; 
-                hubTX += `<input type="submit" value="Get 10 $OPN" onclick="requestHubTransaction(${'0x' + data['nonce']},${'0x' + data['calldata']},${data['oracleSignature']},${data['oracleProvider']},${data['registrySignature']})" /><br />`;
+		hubTX = "<p>You can now trigger the final transaction to the contract, via the Hub. Make sure you manually set a much higher gas price than the current default. If the TX doesnt complete because it runs out of gas, click the button again.</p>";
+	        nonce = '0x' + data['nonce'];
+		calldata = '0x' + data['calldata'];
+		oracleSig = data['oracleSignature'];
+		oracleProvider = data['oracleProvider'];
+		registrySig = data['registrySignature'];
+                hubTX += `<input type="submit" value="Get 10 $OPN" onclick="requestHubTransaction(${nonce},${calldata},${oracleSig},${oracleProvider},${registrySig})" /><br />`;
 	        $('#hubTX').html(hubTX);
             }
         } 
