@@ -32,17 +32,17 @@ async function loadOpenContract() {
     }
   }
 	
-  // Load Open Contract
+  // Load Contracts
   var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
-  contractAddress = await (await fetch(new URL(link + "/contract.address"))).text();
+  contractAddress = $.trim(await (await fetch(new URL(link + "/contract.address"))).text());
   contractAbi = await (await fetch(new URL(link + "/contract.abi"))).text();
   console.log(contractAddress);
   console.log(JSON.parse(contractAbi));
   contract = new ethers.Contract(contractAddress, JSON.parse(contractAbi), provider).connect(user);
-  tokenAddress = await (await fetch('contracts/ropstenToken.address')).text();
+  tokenAddress =  $.trim(await (await fetch('contracts/ropstenToken.address')).text());
   tokenABI = await (await fetch('contracts/ropstenToken.abi')).text();
   OPNtoken = new ethers.Contract(tokenAddress, JSON.parse(tokenABI), provider).connect(user);
-  hubAddress = await (await fetch('contracts/ropstenHub.address')).text();
+  hubAddress =  $.trim(await (await fetch('contracts/ropstenHub.address')).text());
   hubABI = await (await fetch('contracts/ropstenHub.abi')).text();
   OPNhub = new ethers.Contract(hubAddress, JSON.parse(hubABI), provider).connect(user);
        
