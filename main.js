@@ -1,5 +1,6 @@
 var provider = null;
 var user = null;
+var raw_contract = null;
 var contract = null;
 var initialized = false;
 var OPNtoken = null;
@@ -38,7 +39,8 @@ async function loadOpenContract() {
   contractAbi = await (await fetch(new URL(link + "/contract.abi"))).text();
   console.log(contractAddress);
   console.log(JSON.parse(contractAbi));
-  contract = new ethers.Contract(contractAddress, JSON.parse(contractAbi), provider).connect(user);
+  raw_contract = new ethers.Contract(contractAddress, JSON.parse(contractAbi), provider);
+  contract = raw_contract.connect(user);
   tokenAddress =  $.trim(await (await fetch('contracts/ropstenToken.address')).text());
   tokenABI = await (await fetch('contracts/ropstenToken.abi')).text();
   OPNtoken = new ethers.Contract(tokenAddress, JSON.parse(tokenABI), provider).connect(user);
@@ -168,7 +170,12 @@ async function callFunction(fname) {
 
 async function requestHubTransaction(nonce, calldata, oracleSignature, oracleProvider, registrySignature) {
     console.log(nonce, calldata, oracleSignature, oracleProvider, registrySignature);
-    OPNhub.forwardCall(contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature);
+    fn = Object.getOwnPropertyNames(contract.interface.functions).filter(sig => contract.interface.getSighash(sig) == calldata.slice(0,10))[0];
+    call = contract.interface.decodeFunctionData(calldata.slice(0,10), calldata);
+    estimateForwarded = raw_contract.estimateGas[fn](...call, overrides={from: OPNhub.address});
+    estimateCall = OPNhub.estimateGas["forwardCall(address,bytes4,bytes,bytes,address,bytes)"](contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature);
+    estimateTotal = estimateForwarded + estimateCall;
+    OPNhub.forwardCall(contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature, overrides={gasLimit: estimateTotal});
 }
 
 async function signHex(hexString) {
