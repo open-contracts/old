@@ -63,6 +63,12 @@ Although you can change PROVIDER to any valid Ethereum address. The registry enc
 This command ensures your oracle obtains a registration from it.
 </p>
 <form id="submitAndRunOracle" action="javascript:void(0);">
+	<label for="registryIP"><b>Registry IP:</b></label>
+	<input id="registryIP" type="text" value="" size="60" />
+	<input type="submit" value="Submit" onclick="getOracleIP()">
+</form><br><br>
+
+<form id="submitAndRunOracle" action="javascript:void(0);">
 	<label for="enclaveProviderIP"><b>Enclave Provider IP:</b></label>
 	<input id="enclaveProviderIP" type="text" value="127.0.0.1" size="60" />
 	<script type="text/javascript">document.getElementById("enclaveProviderIP").value = new URLSearchParams(window.location.search).get("enclaveProviderIP")</script>

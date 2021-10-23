@@ -282,6 +282,24 @@ async function getOracleCode() {
     return bufferToBase64(buffer);
 }
 
+function getOracleIP() {
+    var registryIP = $('#registryIP').val();
+    console.log("wss://" + registryIP + ":8080/");
+    var ws = new WebSocket("wss://" + registryIP + ":8080/");
+    ws.onopen = function () {
+        console.log("websocket is open now.");
+        ws.send(JSON.stringify({fname: 'get_oracle_ip'}));
+    }
+    ws.onmessage = async function (event) {
+        data = JSON.parse(event.data);
+        if (data['fname'] == 'return_oracle_ip') {
+            var serverIP = data['ip'];
+            $('#enclaveProviderIP').val(serverIP);
+            ws.close();
+        }
+    }
+}
+
 function connectEnclave() {
     var enclaveProviderIP = $('#enclaveProviderIP').val();
     // var oracleCode =  getOracleString(); // $('#oracleCode').val();	
