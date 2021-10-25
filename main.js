@@ -6,19 +6,6 @@ var initialized = false;
 var OPNtoken = null;
 var OPNhub = null;
 
-const ethereumButton = document.querySelector('.enableEthereumButton');
-const showAccount = document.querySelector('.showAccount');
-
-ethereumButton.addEventListener('click', () => {
-  getAccount();
-});
-
-async function getAccount() {
-  provider = await detectEthereumProvider();
-  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-  const account = accounts[0];
-  showAccount.innerHTML = account;
-}
 
 async function init() {
   $('#network').html("starting connection...");
@@ -26,7 +13,7 @@ async function init() {
   ethereum.on('chainChanged', (_chainId) => window.location.reload());
   const newAccounts = ethereum.request({method: 'eth_requestAccounts'});
   provider = await detectEthereumProvider();
-  provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
+  //provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
   user = provider.getSigner();
   initialized = true;
