@@ -75,7 +75,7 @@ async function getTokens() {
 }
 
 async function allowHub() {
-    await OPNtoken.increaseAllowance(OPNhub.address, 3);
+    await OPNtoken.approve(OPNhub.address, 3);
 }
 
 // executed by clicking on a function button
