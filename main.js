@@ -11,7 +11,7 @@ async function init() {
   $('#network').html("starting connection...");
   const {ethereum} = window;
   ethereum.on('chainChanged', (_chainId) => window.location.reload());
-  const newAccounts = ethereum.request({method: 'eth_requestAccounts'});
+  //const newAccounts = ethereum.request({method: 'eth_requestAccounts'});
   provider = await detectEthereumProvider();
   //provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
