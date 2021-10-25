@@ -6,12 +6,6 @@ var initialized = false;
 var OPNtoken = null;
 var OPNhub = null;
 
-async function init2() {
-	const provider = await detectEthereumProvider();
-	const chainId = await provider.request({method: 'eth_chainId'});
-	console.log(chainId);
-}
-
 
 function init() {
   $('#network').html("starting connection...");
