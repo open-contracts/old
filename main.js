@@ -18,6 +18,8 @@ function init() {
   user = provider.getSigner();
   initialized = true;
 }
+
+
 // executed by "Load Contract" button
 async function loadOpenContract() {
   // Connect wallet if necessary
@@ -75,40 +77,6 @@ async function getTokens() {
 async function allowHub() {
     await OPNtoken.increaseAllowance(OPNhub.address, 3);
 }
-
-// executed by "Load Contract" button
-//function loadContract() {
-//  // Connect wallet if necessary
-//  if (!initialized) {
-//    if (window.ethereum) {
-//      init();
-//    } else {
-//      window.addEventListener('ethereum#initialized', setup, {
-//        once: true,
-//      });
-//      setTimeout(init, 30000); // 30 seconds
-//    }
-//  }
-	
-//  // Load Contract
-//  var contractAddress = $('#contractAddress').val();
-//  var contractABI = JSON.parse($('#contractABI').val());
-//  //++ const openContractABI = JSON.parse($('#oracle.py').val());
-//  contract = new ethers.Contract(contractAddress, contractABI, provider).connect(user);
-//  //++ const openContract = new opencontracts.Contract(contract, openContractABI)
-    
-//  // add a button for every function in our contract
-//  var contractFunctions = contract.interface.fragments;
-//  var fnames = "<p><b>Functions:</b></p>";
-//  for (let i = 1; i < contractFunctions.length; i++) {
-//    fname = contractFunctions[i].name;
-//    fnames += `<input id=${fname} type="submit" value="${fname}" onclick="showFunction(${fname})" />`;
-//	}
-//  fnames += "<br />"
-//  $('#functionNames').html(fnames);
-//  $('#currentFunction').html("");
-//  $('#results').html("");
-//}
 
 // executed by clicking on a function button
 function showFunction(fname) {
@@ -173,8 +141,7 @@ async function requestHubTransaction(nonce, calldata, oracleSignature, oraclePro
     call = contract.interface.decodeFunctionData(calldata.slice(0,10), calldata);
     estimateForwarded = await raw_contract.estimateGas[fn](...call, overrides={from: OPNhub.address});
     estimateCall = await OPNhub.estimateGas["forwardCall(address,bytes4,bytes,bytes,address,bytes)"](contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature);
-    estimateTotal = estimateForwarded + estimateCall;
-    console.log(estimateForwarded, estimateCall, estimateTotal);
+    estimateTotal = estimateForwarded.add(estimateCall);
     OPNhub.forwardCall(contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature, overrides={gasLimit: estimateTotal});
 }
 
