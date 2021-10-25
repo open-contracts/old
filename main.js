@@ -141,8 +141,7 @@ async function requestHubTransaction(nonce, calldata, oracleSignature, oraclePro
     call = contract.interface.decodeFunctionData(calldata.slice(0,10), calldata);
     estimateForwarded = await raw_contract.estimateGas[fn](...call, overrides={from: OPNhub.address});
     estimateCall = await OPNhub.estimateGas["forwardCall(address,bytes4,bytes,bytes,address,bytes)"](contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature);
-    estimateTotal = estimateForwarded.add(estimateCall);
-    OPNhub.forwardCall(contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature, overrides={gasLimit: estimateTotal});
+    OPNhub.forwardCall(contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature, overrides={gasLimit: estimateForwarded.add(estimateCall)});
 }
 
 async function signHex(hexString) {
