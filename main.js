@@ -6,6 +6,19 @@ var initialized = false;
 var OPNtoken = null;
 var OPNhub = null;
 
+const ethereumButton = document.querySelector('.enableEthereumButton');
+const showAccount = document.querySelector('.showAccount');
+
+ethereumButton.addEventListener('click', () => {
+  getAccount();
+});
+
+async function getAccount() {
+  provider = await detectEthereumProvider();
+  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+  const account = accounts[0];
+  showAccount.innerHTML = account;
+}
 
 async function init() {
   $('#network').html("starting connection...");
