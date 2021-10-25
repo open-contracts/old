@@ -7,35 +7,31 @@ var OPNtoken = null;
 var OPNhub = null;
 
 
-async function init() {
+function init() {
   $('#network').html("starting connection...");
   const {ethereum} = window;
   ethereum.on('chainChanged', (_chainId) => window.location.reload());
-  //const newAccounts = ethereum.request({method: 'eth_requestAccounts'});
-  const accounts = await window.ethereum.enable();
-  provider = await detectEthereumProvider();
-  //provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
+  const newAccounts = ethereum.request({method: 'eth_requestAccounts'});
+  provider =  new ethers.providers.Web3Provider(ethereum, 'any');
+  provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
-  user = new provider.getSigner();
+  user = provider.getSigner();
   initialized = true;
 }
-
-
-
 // executed by "Load Contract" button
 async function loadOpenContract() {
   // Connect wallet if necessary
-  //if (!initialized) {
-  //  if (window.ethereum) {
-  //    init();
-  //  } else {
-  //    window.addEventListener('ethereum#initialized', setup, {
-  //      once: true,
-  //    });
-  //    setTimeout(init, 30000); // 30 seconds
-  //  }
-  //}
-  await init();
+  if (!initialized) {
+    if (window.ethereum) {
+      init();
+    } else {
+      window.addEventListener('ethereum#initialized', setup, {
+        once: true,
+      });
+      setTimeout(init, 30000); // 30 seconds
+    }
+  }
+	
   // Load Contracts
   var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
   contractAddress = $.trim(await (await fetch(new URL(link + "/contract.address"))).text());
