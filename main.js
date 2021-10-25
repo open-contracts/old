@@ -12,6 +12,7 @@ async function init() {
   const {ethereum} = window;
   ethereum.on('chainChanged', (_chainId) => window.location.reload());
   //const newAccounts = ethereum.request({method: 'eth_requestAccounts'});
+  const accounts = await window.ethereum.enable();
   provider = await detectEthereumProvider();
   //provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
