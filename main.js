@@ -271,7 +271,7 @@ function getOracleIP() {
     }
 }
 
-function connectEnclave() {
+function connectOracle() {
     var oracleIP = $('#oracleIP').val();
     var trusted_connection = false;
     console.log("wss://" + oracleIP + ":8080/")
