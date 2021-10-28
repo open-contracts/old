@@ -246,13 +246,14 @@ async function decrypt(AESkey, json) {
 async function getOracleCode() {
     var oracleBundleLink =  "https://raw.githubusercontent.com/" + $('#contractGithub').val() + "/bundle/oracle_bundle.zip";
     var oracleUrl = new URL(oracleBundleLink);
-    var response = await fetch(oracleUrl)
+    var response = await fetch(oracleUrl);
     var buffer = await response.arrayBuffer();
     return bufferToBase64(buffer);
 }
 
 function getOracleIP() {
-    var registryIP = hexStringToArray(await OPNhub.registryIpList(0)).join(".");
+    var registryIP = hexStringToArray(await OPNhub.registryIpList(0));
+    var registryIP = registryIP.join(".");
     $('#registryIP').val(registryIP);
     console.log("wss://" + registryIP + ":8080/");
     var ws = new WebSocket("wss://" + registryIP + ":8080/");
