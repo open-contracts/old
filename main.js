@@ -252,8 +252,8 @@ async function getOracleCode() {
 }
 
 function getOracleIP() {
-    var registryIP = hexStringToArray(await OPNhub.registryIpList(0));
-    var registryIP = registryIP.join(".");
+    var registryIP = await OPNhub.registryIpList(0);
+    var registryIP = hexStringToArray(registryIP).join(".");
     $('#registryIP').val(registryIP);
     console.log("wss://" + registryIP + ":8080/");
     var ws = new WebSocket("wss://" + registryIP + ":8080/");
