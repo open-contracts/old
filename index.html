@@ -43,14 +43,14 @@ Make sure you have Metamask installed and are connected to the Ropsten testnet. 
 You may have noticed that you can't call the 'saveFromEnclaveOnly' function. This is because it can only be called by an Enclave! You can request the computation below.
 However, you need ot make sure you install <a href="registryRootCA.crt"> this certificate </a>  as a trusted (root) certificate authority in your browser/system.
 <p>
-<form action="javascript:void(0);">
+<form id="getIPs" action="javascript:void(0);">
 	<label for="registryIP"><b>Registry IP:</b></label>
 	<input id="registryIP" type="text" value="" size="60" />
 	<script type="text/javascript">document.getElementById("registryIP").value = new URLSearchParams(window.location.search).get("registryIP")</script>
 	<input type="submit" value="Get IPs" onclick="getOracleIP()" disabled=true>
 </form><br><br>
 
-<form id="submitAndRunOracle" action="javascript:void(0);">
+<form id="submitOracle" action="javascript:void(0);">
 	<label for="oracleIP"><b>Oracle IP:</b></label>
 	<input id="oracleIP" type="text" value="" size="60" />
 	<input type="submit" value="Start Oracle" onclick="connectOracle()" disabled=true>
