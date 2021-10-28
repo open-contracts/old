@@ -1,4 +1,5 @@
-{ "ropsten": {
+{ "ropsten": 
+ {
     "token" : {
       "address": "0x48ca6bF2d7ad3d4C4D3eA2fbf12c0Ac29a36BD29",
       "abi" : [{"inputs": [], "stateMutability": "nonpayable", "type": "constructor"},
