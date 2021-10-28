@@ -33,7 +33,7 @@
 			   {"internalType": "address", "name": "recipient", "type": "address"},
 			   {"internalType": "uint256", "name": "amount", "type": "uint256"}], "name": "transferFrom",
 		"outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "nonpayable", "type": "function"}]
-    }
+    },
     "forwarder" : {
       "address": "0x9dAe5581fAf4a2C11150D8302D80D4009d2DFDa9",
       "abi": [{"inputs": [], "stateMutability": "nonpayable", "type": "constructor"},
