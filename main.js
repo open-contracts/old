@@ -264,8 +264,8 @@ function getOracleIP() {
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
         if (data['fname'] == 'return_oracle_ip') {
-            var serverIP = data['ip'];
-            $('#oracleIP').val(serverIP);
+            var oracleIP = data['ip'];
+            $('#oracleIP').val(oracleIP);
             ws.close();
         }
     }
