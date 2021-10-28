@@ -267,6 +267,7 @@ async function getOracleIP() {
             var oracleIP = data['ip'];
             $('#oracleIP').val(oracleIP);
             ws.close();
+	    setTimeout(() => {document.getElementById('oracleIP').sumbit.disabled=false; }, 5000);
         }
     }
 }
@@ -299,7 +300,7 @@ function connectOracle() {
 	    if (data['fname'] == "print") {
                 document.getElementById("enclaveOutput").innerHTML += "<code>" + data['string'] + "</code><br>";
             } else if (data['fname'] == "xpra") {
-                document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + " target='_blank'> this link. </a><br>";
+		setTimeout(() => {document.getElementById("enclaveOutput").innerHTML += "Opened " + data['url'] + " in interactive session at  <a href=" + data['session'] + " target='_blank'> this link. </a><br>";; }, 5000);
             } else if (data['fname'] == 'user_input') {
                 formID = Math.floor(Math.random() * 100000);
                 submitForm = '<form action="javascript:void(0);" id="' + formID + '"> <label for="input">' + data["message"] + '</label>'
