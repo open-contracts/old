@@ -42,12 +42,9 @@ async function loadOpenContract() {
   console.log(JSON.parse(contractAbi));
   raw_contract = new ethers.Contract(contractAddress, JSON.parse(contractAbi), provider);
   contract = raw_contract.connect(user);
-  tokenAddress =  $.trim(await (await fetch('contracts/ropstenToken.address')).text());
-  tokenABI = await (await fetch('contracts/ropstenToken.abi')).text();
-  OPNtoken = new ethers.Contract(tokenAddress, JSON.parse(tokenABI), provider).connect(user);
-  hubAddress =  $.trim(await (await fetch('contracts/ropstenHub.address')).text());
-  hubABI = await (await fetch('contracts/ropstenHub.abi')).text();
-  OPNhub = new ethers.Contract(hubAddress, JSON.parse(hubABI), provider).connect(user);
+  referece = JSON.parse(await (await fetch('contracts/contract_references.json')).text())[$('#network').val()];
+  OPNtoken = new ethers.Contract(referece['token']['address'], referece['token']['abi'], provider).connect(user);
+  OPNhub = new ethers.Contract(referece['hub']['address'], referece['hub']['abi'], provider).connect(user);
        
   // add a button allowing the user to get OPN tokens
   tokenActions = "<p>You need $OPN tokens to call an open contract function that performs an enclave computation. Get it here:</p>"; 
@@ -150,12 +147,12 @@ async function signHex(hexString) {
     return signature;
 }
 
-function hexStringToArrayBuffer(hexString) {
+function hexStringToArray(hexString) {
     var pairs = hexString.match(/[\dA-F]{2}/gi);
     var integers = pairs.map(function(s) {return parseInt(s, 16);});
-    var array = new Uint8Array(integers);
-    return array.buffer;
+    return new Uint8Array(integers);
 }
+
 
 function b64Url2Buff(b64urlstring) {
   return new Uint8Array(atob(b64urlstring.replace(/-/g, '+').replace(/_/g, '/')).split('').map(val => {
@@ -189,7 +186,7 @@ IwLz3/Y=
 // extracts pubkeys and enclave hash if attestation doc is valid
 async function extractContentIfValid(attestation_data) {
     // decode COSE_SIGN1 message
-    const cose = hexStringToArrayBuffer(attestation_data);
+    const cose = hexStringToArray(attestation_data).buffer;
     const cose_sign1_struct = CBOR.decode(cose);
     const array = new Uint8Array(cose_sign1_struct[2]);
     const attestation_doc = CBOR.decode(array.buffer);
@@ -220,7 +217,7 @@ async function extractContentIfValid(attestation_data) {
     console.log("------->UNCHECKED< ENCLAVE HASH:--------", hash);
     // TODO: Add hash ceck
     const ETHkey = new TextDecoder().decode(attestation_doc['public_key']);
-    const RSAraw = hexStringToArrayBuffer(new TextDecoder().decode(attestation_doc['user_data']));
+    const RSAraw = hexStringToArray(new TextDecoder().decode(attestation_doc['user_data'])).buffer;
     const RSAkey = await crypto.subtle.importKey('spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-256"}, true, ["encrypt"]);
     const AESkey = await crypto.subtle.generateKey({"name":"AES-GCM","length":256},true,['encrypt','decrypt']);
     const rawAES = new Uint8Array(await crypto.subtle.exportKey('raw', AESkey));
@@ -256,7 +253,8 @@ async function getOracleCode() {
 }
 
 function getOracleIP() {
-    var registryIP = $('#registryIP').val();
+    var registryIP = hexStringToArray(await OPNhub.registryIpList(0)).join(".");
+    $('#registryIP').val(registryIP);
     console.log("wss://" + registryIP + ":8080/");
     var ws = new WebSocket("wss://" + registryIP + ":8080/");
     ws.onopen = function () {
@@ -267,18 +265,17 @@ function getOracleIP() {
         data = JSON.parse(event.data);
         if (data['fname'] == 'return_oracle_ip') {
             var serverIP = data['ip'];
-            $('#enclaveProviderIP').val(serverIP);
+            $('#oracleIP').val(serverIP);
             ws.close();
         }
     }
 }
 
 function connectEnclave() {
-    var enclaveProviderIP = $('#enclaveProviderIP').val();
-    // var oracleCode =  getOracleString(); // $('#oracleCode').val();	
+    var oracleIP = $('#oracleIP').val();
     var trusted_connection = false;
-    console.log("wss://" + enclaveProviderIP + ":8080/")
-    var ws = new WebSocket("wss://" + enclaveProviderIP + ":8080/");
+    console.log("wss://" + oracleIP + ":8080/")
+    var ws = new WebSocket("wss://" + oracleIP + ":8080/");
     var ETHkey = null;
     var AESkey = null;
     var encryptedAESkey = null;
