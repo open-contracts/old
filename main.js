@@ -14,7 +14,6 @@ function init() {
   const newAccounts = ethereum.request({method: 'eth_requestAccounts'});
   provider =  new ethers.providers.Web3Provider(ethereum, 'any');
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
-  //++ const openProvider = new opencontracts.providers.Web3Provider(provider);
   user = provider.getSigner();
   initialized = true;
 }
