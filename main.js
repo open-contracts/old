@@ -41,7 +41,7 @@ async function loadOpenContract() {
   console.log(JSON.parse(contractAbi));
   raw_contract = new ethers.Contract(contractAddress, JSON.parse(contractAbi), provider);
   contract = raw_contract.connect(user);
-  referece = JSON.parse(await (await fetch('contracts/contract_references.json')).text())[$('#network').val()];
+  referece = JSON.parse(await (await fetch('contracts/contract_references.json')).text())[(await provider.getNetwork()).name];
   OPNtoken = new ethers.Contract(referece['token']['address'], referece['token']['abi'], provider).connect(user);
   OPNhub = new ethers.Contract(referece['hub']['address'], referece['hub']['abi'], provider).connect(user);
        
