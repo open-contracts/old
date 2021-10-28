@@ -295,7 +295,9 @@ function connectOracle() {
 	    ws.send(JSON.stringify({fname: 'submit_signature', signature: await signHex(data['signThis'])}));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
-        }
+        } else if (data['fname'] == "busy") {
+	    document.getElementById("enclaveOutput").innerHTML += "<code> Oracle is busy. Request a new IP.</code><br>";
+	}
 	if (data['fname'] == 'encrypted') {
 	    data = await decrypt(AESkey, data);
 	    if (data['fname'] == "print") {
@@ -323,8 +325,12 @@ function connectOracle() {
 		registrySig = data['registrySignature'];
                 hubTX += `<input type="submit" value="Call Hub" onclick="requestHubTransaction('${nonce}','${calldata}','${oracleSig}','${oracleProvider}','${registrySig}')" /><br />`;
 	        $('#hubTX').html(hubTX);
-            }
-        } 
+            } 
+        } else if (data['fname'] == 'error') {
+	    document.getElementById("enclaveOutput").innerHTML += "Error! Traceback: <code>" + data['traceback'] + "</code><br>";
+	} else if (data['fname'] == 'shutdown') {
+	    document.getElementById("enclaveOutput").innerHTML += "Enclave shut down.";
+	}
     };
 }
 
