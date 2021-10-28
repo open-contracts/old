@@ -47,7 +47,7 @@ However, you need ot make sure you install <a href="registryRootCA.crt"> this ce
 	<label for="registryIP"><b>Registry IP:</b></label>
 	<input id="registryIP" type="text" value="" size="60" />
 	<script type="text/javascript">document.getElementById("registryIP").value = new URLSearchParams(window.location.search).get("registryIP")</script>
-	<input type="submit" value="Get IPs" onclick="getOracleIP()">
+	<input type="submit" value="Get IPs" onclick="getOracleIP()" disabled=true>
 </form><br><br>
 
 <form id="submitAndRunOracle" action="javascript:void(0);">
