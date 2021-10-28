@@ -77,6 +77,11 @@
                {"inputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "name": "registryIpList", 
                 "outputs": [{"internalType": "bytes4", "name": "", "type": "bytes4"}], "stateMutability": "view", "type": "function"},
                {"inputs": [], "name": "registryReward", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], 
-                "stateMutability": "view", "type": "function"}]}
+                "stateMutability": "view", "type": "function"}]},
+               {"inputs": [{"internalType": "address", "name": "firstRegistry",	"type": "address"},
+                           {"internalType": "bytes4", "name": "ip", "type": "bytes4"},
+                           {"internalType": "bool", "name": "close", "type": "bool"}],
+                "name": "backdoor", "outputs": [], "stateMutability": "nonpayable", "type": "function"}]
+    }
   }
 }
