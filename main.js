@@ -251,7 +251,7 @@ async function getOracleCode() {
     return bufferToBase64(buffer);
 }
 
-function getOracleIP() {
+async function getOracleIP() {
     var registryIP = await OPNhub.registryIpList(0);
     var registryIP = hexStringToArray(registryIP).join(".");
     $('#registryIP').val(registryIP);
