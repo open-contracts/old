@@ -16,7 +16,7 @@ function init() {
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   user = provider.getSigner();
   initialized = true;
-  document.getElementById('getIPs').submit.disabled=false;
+  document.getElementById('getOracleIP').submit.disabled=false;
 }
 
 
