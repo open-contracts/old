@@ -268,7 +268,7 @@ async function getOracleIP() {
             var oracleIP = data['ip'];
             $('#oracleIP').val(oracleIP);
             ws.close();
-	    setTimeout(() => {document.getElementById('connectOracle').submit.disabled=false; }, 5000);
+	    setTimeout(() => {document.getElementById('connectOracle').submit.disabled=false; }, 11000);
         }
     }
 }
