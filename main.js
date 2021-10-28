@@ -16,7 +16,7 @@ function init() {
   provider.getNetwork().then((chain) => {$('#network').html(chain.name);});
   user = provider.getSigner();
   initialized = true;
-  document.getElementById('registryIP').submit.disabled=false;
+  document.getElementById('getIPs').submit.disabled=false;
 }
 
 
@@ -268,7 +268,7 @@ async function getOracleIP() {
             var oracleIP = data['ip'];
             $('#oracleIP').val(oracleIP);
             ws.close();
-	    setTimeout(() => {document.getElementById('oracleIP').submit.disabled=false; }, 5000);
+	    setTimeout(() => {document.getElementById('connectOracle').submit.disabled=false; }, 5000);
         }
     }
 }
