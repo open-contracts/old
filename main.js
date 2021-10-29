@@ -255,8 +255,16 @@ async function getOracleCode() {
     return bufferToBase64(buffer);
 }
 
+async function downloadAsBase64(link) {
+    var url = new URL(link);
+    var respose = await fetch(url);
+    return bufferToBase64(await response.arrayBuffer());
+}
+
 async function getOracleFolder(user, repo, ref, dir) {
-    var links = await GITHUB_FILES.content_links(user, repo, ref, dir)
+    var links = await GITHUB_FILES.content_links(user, repo, ref, dir);
+    const folder = Object.fromEntries(links.entries.map([f, link] => [f, downloadAsBase64(link)]));
+    console.log(folder);
 }
 
 async function getOracleIP() {
