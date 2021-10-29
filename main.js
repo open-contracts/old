@@ -40,7 +40,7 @@ async function loadOpenContract() {
   var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
   var network = (await provider.getNetwork()).name;
   interface = JSON.parse(await (await fetch(new URL(link + "/interface.json"))).text());
-  $('#contractName').val("<h1>" + interface["name"] + </h1>");
+  $('#contractName').val("<h1>" + interface["name"] + "</h1>");
   if (interface["network"] != network) {$('#network').html(network + "  !!! Wrong network. Change to " + interface["network"] + " to proceed.")}
   raw_contract = new ethers.Contract(interface['address'], interface['abi'], provider);
   contract = raw_contract.connect(user);
