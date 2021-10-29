@@ -7,6 +7,7 @@ var initialized = false;
 var OPNtoken = null;
 var OPNhub = null;
 var OPNforwarder = null;
+var oracleFolder = null;
 
 function init() {
   $('#network').html("starting connection...");
@@ -82,22 +83,42 @@ function showFunction(fname) {
   fname = fname.value;
   //var fjson = contract.interface.fragments.filter(x=>x.name==fname)[0];
   var fjson = contract_reference['abi'].filter(x=>x.name==fname)[0];
+  var requires_oracle = (fjson.oracle_folder != undefined)
   var currentFunction = `<p><b>Function name:</b>  ${fname}</p>`;
   currentFunction += `<p><b>State mutability:</b> ${fjson.stateMutability}</p>`;
   currentFunction += '<form id="contractForm" action="javascript:void(0);"> <p><b>Arguments:</b>';
   if (fjson.inputs.length == 0 && fjson.stateMutability!="payable") {currentFunction += " none  <br />"}
   if (fjson.stateMutability=="payable") {
-  	currentFunction += `<div>	<label for="msgValue">messageValue (ETH):	</label> <input id="msgValue" type="text" value="0" size="60" /></div>`;
+      currentFunction += `<div>	<label for="msgValue">messageValue (ETH):	</label> <input id="msgValue" type="text" value="0" size="60" /></div>`;
   }
-  for (let i = 0; i < fjson.inputs.length; i++) {
-  	var input = fjson.inputs[i];
-  	var inputname = input.name;
-  	if (inputname == null) {inputname = input.type}
-  	currentFunction += `<div>	<label for="${inputname}">	${inputname}:	</label> <input id="${inputname}" type="text" value="${input.type}" size="60" /> 	</div>`;
-	}
-  currentFunction +=`<br /> <input type="submit" value="Call" onclick=callFunction(${fname}) /> </form>`
+  if (requires_oracle) {
+      currentFunction += `<div>	<label for="getOracleFolder">Load Oracle Data:    </label> <input id="getOracleFolder" type="submit" onclick=getOracleFolder(${fjson.oracle_folder})/></div>`;
+      
+  } else {
+      for (let i = 0; i < fjson.inputs.length; i++) {
+          var input = fjson.inputs[i];
+  	  var inputname = input.name;
+  	  if (inputname == null) {inputname = input.type}
+  	  currentFunction += `<div>	<label for="${inputname}">	${inputname}:	</label> <input id="${inputname}" type="text" value="${input.type}" size="60" /> 	</div>`;
+      }  
+  }
+
+  currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick=callFunction(${fname}) disabled=${requires_oracle}/> </form>`
   $('#currentFunction').html(currentFunction)
   $('#results').html("");
+}
+
+
+
+async function getOracleFolder(dir) {
+    document.getElementById("getOracleFolder").value = "loading...";
+    document.getElementById("getOracleFolder").disabled = true;
+    const [user, repo, ref] =  $('#contractGithub').val().split("/");
+    var links = await GITHUB_FILES.content_links_json(user, repo, ref, dir);
+    var downloads = Promise.all(Object.entries(links).map(async ([file, link]) => [file, await downloadAsBase64(link)]));
+    oracleFolder = Object.fromEntries(await downloads);
+    document.getElementById("callButton").disabled = false;
+    document.getElementById("getOracleFolder").value = "loaded.";
 }
 
 
@@ -261,14 +282,6 @@ async function downloadAsBase64(link) {
     var url = new URL(link);
     var response = await fetch(url);
     return bufferToBase64(await response.arrayBuffer());
-}
-
-async function getOracleFolder() {
-    const [user, repo, ref] =  $('#contractGithub').val().split("/");
-    var links = await GITHUB_FILES.content_links_json(user, repo, ref, "oracle");
-    var downloads = Promise.all(Object.entries(links).map(async ([file, link]) => [file, await downloadAsBase64(link)]));
-    var folder = Object.fromEntries(await downloads);
-    return folder;
 }
 
 async function getOracleIP() {
