@@ -11,4 +11,3 @@ async function content_links_json(user, repo, ref, dir) {
 
 module.exports = {content_links_json}
 
-content_links_json('open-contracts', 'sample-contract', 'main', 'oracle').then(console.log)

@@ -256,7 +256,8 @@ async function getOracleCode() {
 }
 
 async function getOracleFolder(user, repo, ref, dir) {
-    var links = await GITHUB_FILES.content_links(user, repo, ref, dir)
+    var links = await GITHUB_FILES.content_links(user, repo, ref, dir);
+    
 }
 
 async function getOracleIP() {
