@@ -46,15 +46,13 @@ However, you need ot make sure you install <a href="registryRootCA.crt"> this ce
 <p>
 <form id="getOracleIP"  action="javascript:void(0);">
 	<label for="registryIP"><b>Registry IP:</b></label>
-	<input id="registryIP" type="text" value="" size="60" />
+	<input id="registryIP" type="text" value="" size="60" disabled="true"/>
 	<script type="text/javascript">document.getElementById("registryIP").value = new URLSearchParams(window.location.search).get("registryIP")</script>
-	<input name="submit" type="submit" value="Get IPs" onclick="getOracleIP()" disabled=true>
 </form><br><br>
 
 <form id="connectOracle" action="javascript:void(0);">
 	<label for="oracleIP"><b>Oracle IP:</b></label>
-	<input id="oracleIP" type="text" value="" size="60" />
-	<input name="submit" type="submit" value="Start Oracle" onclick="connectOracle()" disabled=true>
+	<input id="oracleIP" type="text" value="" size="60"  disabled="true"/>
 </form>
 <u>Enclave Output:</u><br>
 <hr>
