@@ -122,7 +122,7 @@ async function getOracleFoldr(dir) {
 }
 
 async function getOracleIP() {
-	ocument.getElementById("callButton").disabled = true;
+    document.getElementById("callButton").disabled = true;
     var registryIP = await OPNhub.registryIpList(0);
     var registryIP = hexStringToArray(registryIP).join(".");
     $('#registryIP').val(registryIP);
