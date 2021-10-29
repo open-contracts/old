@@ -39,7 +39,8 @@ async function loadOpenContract() {
   // Load Contracts
   var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
   var network = (await provider.getNetwork()).name;
-  contract_reference = JSON.parse(await (await fetch(new URL(link + "/contract_reference.json"))).text())[network];
+  contract_reference = JSON.parse(await (await fetch(new URL(link + "/contract_reference.json"))).text());
+  if (contract_reference["network"] != network): {$('#network').html(network + "  !!! Wrong network. Change to " + contract_reference["network"] + " to proceed.")}
   raw_contract = new ethers.Contract(contract_reference['address'], contract_reference['abi'], provider);
   contract = raw_contract.connect(user);
   oc_referece = JSON.parse(await (await fetch('contracts/contract_references.json')).text())[network];
