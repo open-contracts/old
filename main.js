@@ -5,7 +5,7 @@ var contract = null;
 var initialized = false;
 var OPNtoken = null;
 var OPNhub = null;
-
+var OPNforwarder = null;
 
 function init() {
   $('#network').html("starting connection...");
@@ -42,7 +42,9 @@ async function loadOpenContract() {
   contract = raw_contract.connect(user);
   oc_referece = JSON.parse(await (await fetch('contracts/contract_references.json')).text())[network];
   OPNtoken = new ethers.Contract(oc_referece['token']['address'], oc_referece['token']['abi'], provider).connect(user);
+  OPNforwarder = new ethers.Contract(oc_referece['forwarder']['address'], oc_referece['forwarder']['abi'], provider).connect(user);
   OPNhub = new ethers.Contract(oc_referece['hub']['address'], oc_referece['hub']['abi'], provider).connect(user);
+  
 
   // add a button allowing the user to get OPN tokens
   tokenActions = "<p>You need $OPN tokens to call an open contract function that performs an enclave computation. Get it here:</p>"; 
@@ -134,9 +136,11 @@ async function requestHubTransaction(nonce, calldata, oracleSignature, oraclePro
     console.log(nonce, calldata, oracleSignature, oracleProvider, registrySignature);
     fn = Object.getOwnPropertyNames(contract.interface.functions).filter(sig => contract.interface.getSighash(sig) == calldata.slice(0,10))[0];
     call = contract.interface.decodeFunctionData(calldata.slice(0,10), calldata);
-    estimateForwarded = await raw_contract.estimateGas[fn](...call, overrides={from: OPNhub.address});
-    estimateCall = await OPNhub.estimateGas["forwardCall(address,bytes4,bytes,bytes,address,bytes)"](contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature);
-    OPNhub.forwardCall(contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature, overrides={gasLimit: estimateForwarded.add(estimateCall)});
+    estimateHub = await OPNhub.estimateGas["forwardCall(address,bytes4,bytes,bytes,address,bytes)"](contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature);
+    estimateForwarder = await OPNforwarder.estimateGas["forwardCall(address,bytes)"](contract.address, calldata, overrides={from: OPNhub.address});
+    estimateContract = await raw_contract.estimateGas[fn](...call, overrides={from: OPNforwarder.address});
+    estiamteTotal = estimateHub.add(estimateForwarder.add(estimateContract));
+    OPNhub.forwardCall(contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature, overrides={gasLimit: estiamteTotal});
 }
 
 async function signHex(hexString) {
