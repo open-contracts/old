@@ -92,8 +92,8 @@ function showFunction(fname) {
       currentFunction += `<div>	<label for="msgValue">messageValue (ETH):	</label> <input id="msgValue" type="text" value="0" size="60" /></div>`;
   }
   if (requires_oracle) {
-      currentFunction +=`<br /> <input id="getOracleFolder" type="submit" value="Load Oracle Data" onclick=getOracleFolder("${fjson.oracle_folder}")})/> </form>`;
-      currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick=getOracleIP(}) disabled="true"/> </form>`;
+      currentFunction +=`<br /> <input id="getOracleFolder" type="submit" value="Load Oracle Data" onclick=getOracleFolder("${fjson.oracle_folder}")/> </form>`;
+      currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick=getOracleIP() disabled="true"/> </form>`;
   } else {
       for (let i = 0; i < fjson.inputs.length; i++) {
           var input = fjson.inputs[i];
