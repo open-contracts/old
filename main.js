@@ -87,7 +87,7 @@ function showFunction(fname) {
   var currentFunction = `<p><b>Function name:</b>  ${fname}</p>`;
   currentFunction += `<p><b>State mutability:</b> ${fjson.stateMutability}</p>`;
   currentFunction += '<form id="contractForm" action="javascript:void(0);"> <p><b>Arguments:</b>';
-  if (fjson.inputs.length == 0 && fjson.stateMutability!="payable") {currentFunction += " none  <br />"}
+  if ((fjson.inputs.length == 0 || requires_oracle) && fjson.stateMutability!="payable") {currentFunction += " none  <br />"}
   if (fjson.stateMutability=="payable") {
       currentFunction += `<div>	<label for="msgValue">messageValue (ETH):	</label> <input id="msgValue" type="text" value="0" size="60" /></div>`;
   }
