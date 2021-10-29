@@ -93,17 +93,17 @@ function showFunction(fname) {
   }
   if (requires_oracle) {
       currentFunction += `<div>	<label for="getOracleFolder">Load Oracle Data:    </label> <input id="getOracleFolder" type="submit" onclick="getOracleFolder(${fjson.oracle_folder})"/></div>`;
-      
+      currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick=getOracleIP(${fname}) disabled="true"/> </form>`;
   } else {
       for (let i = 0; i < fjson.inputs.length; i++) {
           var input = fjson.inputs[i];
   	  var inputname = input.name;
   	  if (inputname == null) {inputname = input.type}
   	  currentFunction += `<div>	<label for="${inputname}">	${inputname}:	</label> <input id="${inputname}" type="text" value="${input.type}" size="60" /> 	</div>`;
+	  currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick="callFunction(${fname})" /> </form>`;
       }  
   }
-
-  currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick=callFunction(${fname}) disabled="${requires_oracle}"/> </form>`;
+  
   $('#currentFunction').html(currentFunction)
   $('#results').html("");
 }
@@ -300,7 +300,7 @@ async function getOracleIP() {
             var oracleIP = data['ip'];
             $('#oracleIP').val(oracleIP);
             ws.close();
-	    setTimeout(() => {document.getElementById('connectOracle').submit.disabled=false; }, 11000);
+	    setTimeout(() => {document.getElementById("enclaveOutput").innerHTML += "Connecting to enclave... <br>"; connectOracle()}, 11000);
         }
     }
 }
@@ -325,9 +325,8 @@ function connectOracle() {
             trusted_connection = true;
             ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
 	    ws.send(JSON.stringify({fname: 'submit_signature', signature: await signHex(data['signThis'])}));
-	    let oracleSubmission = await getOracleFolder();
-	    oracleSubmission.fname = 'submit_oracle';
-            ws.send(JSON.stringify(await encrypt(AESkey, oracleSubmission)));
+	    oracleFolder.fname = 'submit_oracle';
+            ws.send(JSON.stringify(await encrypt(AESkey, oracleFolder)));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
         } else if (data['fname'] == "busy") {
 	    document.getElementById("enclaveOutput").innerHTML += "<code> Oracle is busy. Request a new IP.</code><br>";
