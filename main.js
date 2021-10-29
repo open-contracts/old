@@ -1,7 +1,7 @@
 var provider = null;
 var user = null;
 var raw_contract = null;
-var contract_reference = null;
+var interface = null;
 var contract = null;
 var initialized = false;
 var OPNtoken = null;
@@ -39,11 +39,11 @@ async function loadOpenContract() {
   // Load Contracts
   var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
   var network = (await provider.getNetwork()).name;
-  contract_reference = JSON.parse(await (await fetch(new URL(link + "/contract_reference.json"))).text());
-  if (contract_reference["network"] != network): {$('#network').html(network + "  !!! Wrong network. Change to " + contract_reference["network"] + " to proceed.")}
-  raw_contract = new ethers.Contract(contract_reference['address'], contract_reference['abi'], provider);
+  interface = JSON.parse(await (await fetch(new URL(link + "/interface.json"))).text());
+  if (interface["network"] != network): {$('#network').html(network + "  !!! Wrong network. Change to " + interface["network"] + " to proceed.")}
+  raw_contract = new ethers.Contract(interface['address'], interface['abi'], provider);
   contract = raw_contract.connect(user);
-  oc_referece = JSON.parse(await (await fetch('contracts/contract_references.json')).text())[network];
+  oc_referece = JSON.parse(await (await fetch('contracts/interface.json')).text())[network];
   OPNtoken = new ethers.Contract(oc_referece['token']['address'], oc_referece['token']['abi'], provider).connect(user);
   //raw_forwarder = new ethers.Contract(oc_referece['forwarder']['address'], oc_referece['forwarder']['abi'], provider);
   OPNforwarder = new ethers.Contract(oc_referece['forwarder']['address'], oc_referece['forwarder']['abi'], provider).connect(user);
@@ -60,8 +60,8 @@ async function loadOpenContract() {
   // add a button for every function in the contract
   //var contractFunctions = contract.interface.fragments;
   var fnames = "<p><b>Contract Functions:</b></p>";
-  for (let i = 1; i < contract_reference['abi'].length; i++) {
-    fname = contract_reference['abi'][i].name;
+  for (let i = 1; i < interface['abi'].length; i++) {
+    fname = interface['abi'][i].name;
     fnames += `<input id=${fname} type="submit" value="${fname}" onclick="showFunction(${fname})" />`;
 	}
   fnames += "<br />"
@@ -83,7 +83,7 @@ async function allowHub() {
 function showFunction(fname) {
   fname = fname.value;
   //var fjson = contract.interface.fragments.filter(x=>x.name==fname)[0];
-  var fjson = contract_reference['abi'].filter(x=>x.name==fname)[0];
+  var fjson = interface['abi'].filter(x=>x.name==fname)[0];
   var requires_oracle = (fjson.oracle_folder != undefined)
   var currentFunction = `<p><b>Function name:</b>  ${fname}</p>`;
   currentFunction += `<p><b>State mutability:</b> ${fjson.stateMutability}</p>`;
