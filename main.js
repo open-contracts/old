@@ -42,7 +42,7 @@ async function loadOpenContract() {
   contract = raw_contract.connect(user);
   oc_referece = JSON.parse(await (await fetch('contracts/contract_references.json')).text())[network];
   OPNtoken = new ethers.Contract(oc_referece['token']['address'], oc_referece['token']['abi'], provider).connect(user);
-  raw_forwarder = new ethers.Contract(oc_referece['forwarder']['address'], oc_referece['forwarder']['abi'], provider);
+  //raw_forwarder = new ethers.Contract(oc_referece['forwarder']['address'], oc_referece['forwarder']['abi'], provider);
   OPNforwarder = raw_forwarder.connect(user);
   OPNhub = new ethers.Contract(oc_referece['hub']['address'], oc_referece['hub']['abi'], provider).connect(user);
   
@@ -138,9 +138,9 @@ async function requestHubTransaction(nonce, calldata, oracleSignature, oraclePro
     fn = Object.getOwnPropertyNames(contract.interface.functions).filter(sig => contract.interface.getSighash(sig) == calldata.slice(0,10))[0];
     call = contract.interface.decodeFunctionData(calldata.slice(0,10), calldata);
     estimateHub = await OPNhub.estimateGas["forwardCall(address,bytes4,bytes,bytes,address,bytes)"](contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature);
-    estimateForwarder = await raw_forwarder.estimateGas["forwardCall(address,bytes)"](contract.address, calldata, overrides={from: OPNhub.address});
+    //estimateForwarder = await raw_forwarder.estimateGas["forwardCall(address,bytes)"](contract.address, calldata, overrides={from: OPNhub.address});
     estimateContract = await raw_contract.estimateGas[fn](...call, overrides={from: OPNforwarder.address});
-    estiamteTotal = estimateHub.add(estimateForwarder.add(estimateContract));
+    estiamteTotal = estimateHub.add(estimateContract);
     OPNhub.forwardCall(contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature, overrides={gasLimit: estiamteTotal});
 }
 
