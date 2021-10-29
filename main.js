@@ -56,10 +56,10 @@ async function loadOpenContract() {
   $('#tokenActions').html(tokenActions);
 
   // add a button for every function in the contract
-  var contractFunctions = contract.interface.fragments;
+  //var contractFunctions = contract.interface.fragments;
   var fnames = "<p><b>Contract Functions:</b></p>";
-  for (let i = 1; i < contract_reference.length; i++) {
-    fname = contractFunctions[i].name;
+  for (let i = 1; i < contract_reference['abi'].length; i++) {
+    fname = contract_reference['abi'][i].name;
     fnames += `<input id=${fname} type="submit" value="${fname}" onclick="showFunction(${fname})" />`;
 	}
   fnames += "<br />"
@@ -80,8 +80,8 @@ async function allowHub() {
 // executed by clicking on a function button
 function showFunction(fname) {
   fname = fname.value;
-  var fjson = contract.interface.fragments.filter(x=>x.name==fname)[0];
-  var fjson = contract_reference.filter(x=>x.name==fname)[0];
+  //var fjson = contract.interface.fragments.filter(x=>x.name==fname)[0];
+  var fjson = contract_reference['abi'].filter(x=>x.name==fname)[0];
   var currentFunction = `<p><b>Function name:</b>  ${fname}</p>`;
   currentFunction += `<p><b>State mutability:</b> ${fjson.stateMutability}</p>`;
   currentFunction += '<form id="contractForm" action="javascript:void(0);"> <p><b>Arguments:</b>';
