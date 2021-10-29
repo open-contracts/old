@@ -36,16 +36,14 @@ async function loadOpenContract() {
 	
   // Load Contracts
   var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
-  contractAddress = $.trim(await (await fetch(new URL(link + "/contract.address"))).text());
-  contractAbi = await (await fetch(new URL(link + "/contract.abi"))).text();
-  console.log(contractAddress);
-  console.log(JSON.parse(contractAbi));
-  raw_contract = new ethers.Contract(contractAddress, JSON.parse(contractAbi), provider);
+  var network = (await provider.getNetwork()).name;
+  contract_reference = JSON.parse(await (await fetch(new URL(link + "/contract_reference.json"))).text())[network];
+  raw_contract = new ethers.Contract(contract_reference['address'], contract_reference['abi'], provider);
   contract = raw_contract.connect(user);
-  referece = JSON.parse(await (await fetch('contracts/contract_references.json')).text())[(await provider.getNetwork()).name];
-  OPNtoken = new ethers.Contract(referece['token']['address'], referece['token']['abi'], provider).connect(user);
-  OPNhub = new ethers.Contract(referece['hub']['address'], referece['hub']['abi'], provider).connect(user);
-       
+  oc_referece = JSON.parse(await (await fetch('contracts/contract_references.json')).text())[network];
+  OPNtoken = new ethers.Contract(oc_referece['token']['address'], oc_referece['token']['abi'], provider).connect(user);
+  OPNhub = new ethers.Contract(oc_referece['hub']['address'], oc_referece['hub']['abi'], provider).connect(user);
+
   // add a button allowing the user to get OPN tokens
   tokenActions = "<p>You need $OPN tokens to call an open contract function that performs an enclave computation. Get it here:</p>"; 
   tokenActions += '<input type="submit" value="Get 10 $OPN" onclick="getTokens()" /><br />'
