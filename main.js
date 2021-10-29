@@ -121,9 +121,31 @@ async function getOracleFoldr(dir) {
     document.getElementById("getOracleFolder").value = "loaded.";
 }
 
+async function getOracleIP() {
+	ocument.getElementById("callButton").disabled = true;
+    var registryIP = await OPNhub.registryIpList(0);
+    var registryIP = hexStringToArray(registryIP).join(".");
+    $('#registryIP').val(registryIP);
+    console.log("wss://" + registryIP + ":8080/");
+    var ws = new WebSocket("wss://" + registryIP + ":8080/");
+    ws.onopen = function () {
+        console.log("websocket is open now.");
+        ws.send(JSON.stringify({fname: 'get_oracle_ip'}));
+    }
+    ws.onmessage = async function (event) {
+        data = JSON.parse(event.data);
+        if (data['fname'] == 'return_oracle_ip') {
+            var oracleIP = data['ip'];
+            $('#oracleIP').val(oracleIP);
+            ws.close();
+	    setTimeout(() => {document.getElementById("enclaveOutput").innerHTML += "Connecting to enclave... <br>"; connectOracle()}, 11000);
+        }
+    }
+}
 
 // executed by the Call button
 async function callFunction(fname) {
+   document.getElementById("callButton").disabled = true;
    fname = fname.value;
    var fjson = contract.interface.fragments.filter(x=>x.name==fname)[0];
    var args = [];
@@ -284,26 +306,7 @@ async function downloadAsBase64(link) {
     return bufferToBase64(await response.arrayBuffer());
 }
 
-async function getOracleIP() {
-    var registryIP = await OPNhub.registryIpList(0);
-    var registryIP = hexStringToArray(registryIP).join(".");
-    $('#registryIP').val(registryIP);
-    console.log("wss://" + registryIP + ":8080/");
-    var ws = new WebSocket("wss://" + registryIP + ":8080/");
-    ws.onopen = function () {
-        console.log("websocket is open now.");
-        ws.send(JSON.stringify({fname: 'get_oracle_ip'}));
-    }
-    ws.onmessage = async function (event) {
-        data = JSON.parse(event.data);
-        if (data['fname'] == 'return_oracle_ip') {
-            var oracleIP = data['ip'];
-            $('#oracleIP').val(oracleIP);
-            ws.close();
-	    setTimeout(() => {document.getElementById("enclaveOutput").innerHTML += "Connecting to enclave... <br>"; connectOracle()}, 11000);
-        }
-    }
-}
+
 
 function connectOracle() {
     var oracleIP = $('#oracleIP').val();
