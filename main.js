@@ -136,9 +136,14 @@ async function getOracleIP() {
         data = JSON.parse(event.data);
         if (data['fname'] == 'return_oracle_ip') {
             var oracleIP = data['ip'];
-            $('#oracleIP').val(oracleIP);
-            ws.close();
-	    setTimeout(() => {document.getElementById("enclaveOutput").innerHTML += "Connecting to enclave... <br>"; connectOracle()}, 11000);
+	    if (oracleIP  == "N/A") {
+                document.getElementById("callButton").disabled = false;
+		$('#oracleIP').val("Curently none available. Try again in a bit.");
+	    } else {
+                $('#oracleIP').val(oracleIP);
+                ws.close();
+	        setTimeout(() => {document.getElementById("enclaveOutput").innerHTML += "Connecting to enclave... <br>"; connectOracle()}, 11000);
+	    }
         }
     }
 }
