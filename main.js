@@ -43,11 +43,11 @@ async function loadOpenContract() {
   if (interface["network"] != network) {$('#network').html(network + "  !!! Wrong network. Change to " + interface["network"] + " to proceed.")}
   raw_contract = new ethers.Contract(interface['address'], interface['abi'], provider);
   contract = raw_contract.connect(user);
-  oc_referece = JSON.parse(await (await fetch('contracts/interface.json')).text())[network];
-  OPNtoken = new ethers.Contract(oc_referece['token']['address'], oc_referece['token']['abi'], provider).connect(user);
-  //raw_forwarder = new ethers.Contract(oc_referece['forwarder']['address'], oc_referece['forwarder']['abi'], provider);
-  OPNforwarder = new ethers.Contract(oc_referece['forwarder']['address'], oc_referece['forwarder']['abi'], provider).connect(user);
-  OPNhub = new ethers.Contract(oc_referece['hub']['address'], oc_referece['hub']['abi'], provider).connect(user);
+  oc_interface = JSON.parse(await (await fetch('contracts/opencontracts_interface.json')).text())[network];
+  OPNtoken = new ethers.Contract(oc_interface['token']['address'], oc_interface['token']['abi'], provider).connect(user);
+  //raw_forwarder = new ethers.Contract(oc_interface['forwarder']['address'], oc_interface['forwarder']['abi'], provider);
+  OPNforwarder = new ethers.Contract(oc_interface['forwarder']['address'], oc_interface['forwarder']['abi'], provider).connect(user);
+  OPNhub = new ethers.Contract(oc_interface['hub']['address'], oc_interface['hub']['abi'], provider).connect(user);
   
 
   // add a button allowing the user to get OPN tokens
