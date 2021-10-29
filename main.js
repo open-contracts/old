@@ -263,7 +263,7 @@ async function downloadAsBase64(link) {
 
 async function getOracleFolder(user, repo, ref, dir) {
     var links = await GITHUB_FILES.content_links_json(user, repo, ref, dir);
-    const folder = Object.fromEntries(Object.entries(links).map(async ([file, link]) => [file, await downloadAsBase64(link)]));
+    const folder = Object.fromEntries(await Object.entries(links).map(async ([file, link]) => [file, await downloadAsBase64(link)]));
     console.log(JSON.stringify(folder)); 
     return folder;
 }
