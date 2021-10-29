@@ -257,7 +257,7 @@ async function getOracleCode() {
 
 async function downloadAsBase64(link) {
     var url = new URL(link);
-    var respose = await fetch(url);
+    var response = await fetch(url);
     return bufferToBase64(await response.arrayBuffer());
 }
 
