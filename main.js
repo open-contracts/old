@@ -263,9 +263,8 @@ async function downloadAsBase64(link) {
 
 async function getOracleFolder(user, repo, ref, dir) {
     var links = await GITHUB_FILES.content_links_json(user, repo, ref, dir);
-    var download = Promise.all(Object.entries(links).map(async ([file, link]) => [file, await downloadAsBase64(link)]));
-    const folder = Object.fromEntries(await download);
-    console.log(JSON.stringify(folder)); 
+    var downloads = Promise.all(Object.entries(links).map(async ([file, link]) => [file, await downloadAsBase64(link)]));
+    var folder = Object.fromEntries(await downloads);
     return folder;
 }
 
@@ -305,12 +304,14 @@ function connectOracle() {
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
         if (data['fname'] == "attestation" && !trusted_connection) {
-            let oracleCode = await getOracleCode();
+            //let oracleSubmission = {fname: 'submit_oracle', fileContents: await getOracleCode()};
             [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
             trusted_connection = true;
             ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
 	    ws.send(JSON.stringify({fname: 'submit_signature', signature: await signHex(data['signThis'])}));
-            ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'submit_oracle', fileContents: oracleCode})));
+	    let oracleSubmission = await getOracleFolder();
+	    oracleSubmission.fname = 'submit_oracle';
+            ws.send(JSON.stringify(await encrypt(AESkey, oracleSubmission)));
             ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
         } else if (data['fname'] == "busy") {
 	    document.getElementById("enclaveOutput").innerHTML += "<code> Oracle is busy. Request a new IP.</code><br>";
