@@ -92,7 +92,7 @@ function showFunction(fname) {
       currentFunction += `<div>	<label for="msgValue">messageValue (ETH):	</label> <input id="msgValue" type="text" value="0" size="60" /></div>`;
   }
   if (requires_oracle) {
-      currentFunction += `<div>	<label for="getOracleFolder">Load Oracle Data:    </label> <input id="getOracleFolder" type="submit" onclick=getOracleFolder(${fjson.oracle_folder})/></div>`;
+      currentFunction += `<div>	<label for="getOracleFolder">Load Oracle Data:    </label> <input id="getOracleFolder" type="submit" onclick="getOracleFolder(${fjson.oracle_folder})"/></div>`;
       
   } else {
       for (let i = 0; i < fjson.inputs.length; i++) {
@@ -103,7 +103,7 @@ function showFunction(fname) {
       }  
   }
 
-  currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick=callFunction(${fname}) disabled=${requires_oracle}/> </form>`
+  currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick=callFunction(${fname}) disabled="${requires_oracle}"/> </form>`;
   $('#currentFunction').html(currentFunction)
   $('#results').html("");
 }
