@@ -33,7 +33,7 @@ async function loadOpenContract() {
       setTimeout(init, 30000); // 30 seconds
     }
   }
-	
+
   // Load Contracts
   var link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
   var network = (await provider.getNetwork()).name;
@@ -53,7 +53,7 @@ async function loadOpenContract() {
   tokenActions += "<p>You need to allow the OpenContracts Hub to spend 3 $OPN tokens, otherwise it will reject the final transaction. Do that here:</p>"; 
   tokenActions += '<input type="submit" value="Give Hub access to 3 $OPN" onclick="allowHub()" /><br />'	
   $('#tokenActions').html(tokenActions);
-	
+
   // add a button for every function in the contract
   var contractFunctions = contract.interface.fragments;
   var fnames = "<p><b>Contract Functions:</b></p>";
@@ -110,7 +110,7 @@ async function callFunction(fname) {
      	if (inputname == null) {inputname = input.type}
    		args.push($(`#${inputname}`).val());
    }
-   
+
    if (fjson.stateMutability=="payable") {
       var msgVal = ethers.utils.parseEther($("#msgValue").val());
       args.push({value: msgVal});
@@ -129,7 +129,7 @@ async function callFunction(fname) {
    } catch(error) {
      $('#results').html(error.message);
    }
-   
+
 }
 
 
@@ -255,6 +255,10 @@ async function getOracleCode() {
     return bufferToBase64(buffer);
 }
 
+async function getOracleFolder(user, repo, ref, dir) {
+    var links = await GITHUB_FILES.content_links(user, repo, ref, dir)
+}
+
 async function getOracleIP() {
     var registryIP = await OPNhub.registryIpList(0);
     var registryIP = hexStringToArray(registryIP).join(".");
@@ -317,7 +321,7 @@ function connectOracle() {
                     form.input.disabled = true;
                     form.submit.disabled = true;
                     ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: form.input.value})));
-                })		
+                })
             } else if (data['fname'] == 'submit') {
                 document.getElementById("enclaveOutput").innerHTML += "Received oracle results. Requesting transaction to the Open Contracts Hub.";
 		hubTX = "<p>You can now trigger the final transaction to the contract, via the Hub.</p>";
@@ -328,7 +332,7 @@ function connectOracle() {
 		registrySig = data['registrySignature'];
                 hubTX += `<input type="submit" value="Call Hub" onclick="requestHubTransaction('${nonce}','${calldata}','${oracleSig}','${oracleProvider}','${registrySig}')" /><br />`;
 	        $('#hubTX').html(hubTX);
-            } 
+            }
         } else if (data['fname'] == 'error') {
 	    document.getElementById("enclaveOutput").innerHTML += "Error! Traceback: <code>" + data['traceback'] + "</code><br>";
 	} else if (data['fname'] == 'shutdown') {
