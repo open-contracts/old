@@ -100,8 +100,8 @@ function showFunction(fname) {
   	  var inputname = input.name;
   	  if (inputname == null) {inputname = input.type}
   	  currentFunction += `<div>	<label for="${inputname}">	${inputname}:	</label> <input id="${inputname}" type="text" value="${input.type}" size="60" /> 	</div>`;
-	  currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick="callFunction(${fname})" /> </form>`;
       }  
+      currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick="callFunction(${fname})" /> </form>`;
   }
   
   $('#currentFunction').html(currentFunction)
