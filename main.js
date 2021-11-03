@@ -73,7 +73,7 @@ async function loadOpenContract() {
 
 
 async function getTokens() {
-    await OPNtoken.gimmeTen();
+    await OPNtoken.gimmeSomeMoreOfDemCoins();
 }
 
 async function allowHub() {
