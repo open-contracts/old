@@ -51,7 +51,7 @@
                "name": "update", "outputs": [], "stateMutability": "nonpayable", "type": "function"}]
     },
     "hub" : {
-      "address": "0x05221b2f3eF160A9db48903BB1e7ad11eca038E8",
+      "address": "0x7e1a347B91ae33ee0c85014194eC5f78F72408E0",
       "abi" : [{"inputs": [{"internalType": "address", "name": "newEnclave", "type": "address"},
                            {"internalType": "address payable", "name": "newProvider",	"type": "address"},
                            {"internalType": "bytes4",	"name": "newIp", "type": "bytes4"},
