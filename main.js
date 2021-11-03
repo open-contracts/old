@@ -170,7 +170,7 @@ async function callFunction(fname) {
 
    try {
    	 var txReturn = await contract.functions[fname].apply(this, args);
-     if (fjson.stateMutability=="view") {
+     if (fjson.stateMutability=="view" || fjson.stateMutability=="pure") {
     	 $('#results').html(txReturn.map(x => x.toString()));
      } else {
        $('#results').html("Waiting for confirmation...");
