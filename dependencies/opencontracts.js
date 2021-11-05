@@ -98,9 +98,9 @@ async function requestHubTransaction(interface, nonce, calldata, oracleSignature
 }
 
 async function encrypt(AESkey, json) {
-    const nonce = interface.window.crypto.getRandomValues(new Uint8Array(12));
+    const nonce = window.crypto.getRandomValues(new Uint8Array(12));
     const data = new TextEncoder().encode(JSON.stringify(json));
-    const ciphertext = new Uint8Array(await interface.window.crypto.subtle.encrypt({ name: "AES-GCM", iv: nonce}, AESkey, data));
+    const ciphertext = new Uint8Array(await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: nonce}, AESkey, data));
     var encrypted = new (ciphertext.constructor)(ciphertext.length + nonce.length);
     encrypted.set(ciphertext);
     encrypted.set(nonce, ciphertext.length);
@@ -112,7 +112,7 @@ async function decrypt(AESkey, json) {
     const encrypted = Base64.toUint8Array(json['payload']);
     const ciphertext = encrypted.slice(0, encrypted.length-12);
     const nonce = encrypted.slice(encrypted.length-12, encrypted.length);
-    const decrypted = await interface.window.crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce}, AESkey, ciphertext);
+    const decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce}, AESkey, ciphertext);
     return JSON.parse(new TextDecoder().decode(decrypted));
 }
 
@@ -200,21 +200,20 @@ async function githubOracleDownloader(user, repo, ref, dir) {
 }
 
 
-async function OpenContracts(window) {
+async function OpenContracts() {
     const interface = {};
-    interface.window = window;
     // detect metamask
-    if (interface.window.ethereum) {
+    if (window.ethereum) {
         await init()
     } else {
-        interface.window.addEventListener('ethereum#initialized', init, {once: true});
+        window.addEventListener('ethereum#initialized', init, {once: true});
         setTimeout(init, 5000);
     }
     async function init() {
-        const {ethereum} = interface.window;
+        const {ethereum} = window;
         if (ethereum && ethereum.isMetaMask) {
-            interface.window.ethereum.on('chainChanged', (_chainId) => interface.window.location.reload());
-            interface.window.ethereum.request({method: 'eth_requestAccounts'});
+            window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
+            window.ethereum.request({method: 'eth_requestAccounts'});
             interface.provider = new ethers.providers.Web3Provider(ethereum, 'any');
             interface.network = (await interface.provider.getNetwork()).name;
             interface.signer = interface.provider.getSigner();
@@ -252,9 +251,16 @@ async function OpenContracts(window) {
                 f.oracleFolder = contract.abi[i].oracleFolder;
                 f.requiresOracle = (f.oracleFolder != undefined);
 		if (f.requiresOracle) {
-		    f.printHandler = async function(message) {alert(message)};
-		    f.inputHandler = async function (message) {return prompt(message)};
+		    f.printHandler = async function(message) {
+			    console.log(f"Warning: using default (popup) printHandler for function {f.name}"); 
+			    alert(message);
+		    };
+		    f.inputHandler = async function (message) {
+			    console.log(f"Warning: using default (popup) inputHandler for function {f.name}"); 
+			    return prompt(message);
+		    };
 		    f.xpraHandler = async function(target_url, session_url) {
+			    console.log(f"Warning: using default (popup) xpraHandler for function {f.name}"); 
 			    if (window.confirm(`open interactive session to {target_url} in new tab?`)) {
 		                var newWin = window.open(session_url,'_blank');
                                 if(!newWin || newWin.closed || typeof newWin.closed=='undefined') {
@@ -263,9 +269,13 @@ async function OpenContracts(window) {
 				}
 			    }
 		    };
-		    f.errorHandler = async function (message) {alert("Error in enclave. Traceback:\n" + message)};
+		    f.errorHandler = async function (message) {
+			    console.log(f"Warning: using default (popup) errorHandler for function {f.name}"); 
+			    alert("Error in enclave. Traceback:\n" + message);
+		    };
 		    f.submitHandler = async function (submit) {
-			    message = "Oracle execution completed. Starting final transaction. "
+			    console.log(f"Warning: using default (popup) submitHandler for function {f.name}"); 
+			    message = "Oracle execution completed. Starting final transaction. ";
 			    alert(message + "It will fail if you did not grant enough $OPN to the hub.");
 			    await submit()
 		    };
