@@ -136,6 +136,13 @@ async function OpenContracts(window) {
                 f.stateMutability = contract.abi[i].stateMutability;
                 f.oracleFolder = contract.abi[i].oracleFolder;
                 f.requiresOracle = (f.oracleFolder != undefined);
+		if (f.requiresOracle) {
+		    f.printHandler = console.log;
+		    f.inputHandler = prompt;
+		    f.xpraHandler = async function(target_url, session_url) {console.log(`opened xpra session for {target_url} at {session_url}`)};
+		    f.errorHandler = console.log;
+		    f.submitHandler = async function (func) {await func()};
+		}
                 f.inputs = [];
                 if (f.stateMutability == "payable") {
                     f.inputs.push({name: "messageValue", type: "uint256", value: null,
