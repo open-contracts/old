@@ -101,7 +101,7 @@ async function OpenContracts(window) {
 
 
 
-async function main() {
+async function  loadOpenContract() {
     var interface = await OpenContracts(window);
     const link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
     const contract_interface = JSON.parse(await (await fetch(new URL(link + "/interface.json"))).text());
