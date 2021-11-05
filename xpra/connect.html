@@ -2,6 +2,25 @@
 <body>
 
 Interactive session ended. This window can be closed.
-<script>window.open('','_self').close()<\script>
+    <button onclick="return closeWindow();">
+        Close Window
+    </button>
+      
+    <script type="text/javascript">
+        function closeWindow() {
+  
+            // Open the new window 
+            // with the URL replacing the
+            // current page using the
+            // _self value
+            let new_window =
+                open(location, '_self');
+  
+            // Close this window
+            new_window.close();
+  
+            return false;
+        }
+    </script>
 </body>
 </html>
