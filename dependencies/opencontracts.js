@@ -16,6 +16,17 @@ async function ethereumTransaction(interface, f) {
 }
 
 
+async function githubOracleDownloader(user, repo, ref, dir) {
+    var links = await GITHUB_FILES.content_links_json(user, repo, ref, dir);
+    const downloadAsBase64 = async function (link) {
+        const url = new URL(link);
+        const response = await fetch(url);
+        return btoa(new Uint8Array(await response.arrayBuffer()).reduce((data, byte)=> {return data + String.fromCharCode(byte);}, ''));
+    }
+    const downloads = Promise.all(Object.entries(links).map(async ([file, link]) => [file, await downloadAsBase64(link)]));
+    return Object.fromEntries(await downloads);
+}
+
 
 async function OpenContracts(window) {
     const interface = {};
