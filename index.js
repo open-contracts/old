@@ -17,10 +17,6 @@ async function loadOpenContract() {
     $('#results').html("");
 }
 
-async function printHandler() {0}
-async function inputHandler() {0}
-async function xpraHandler() {0}
-async function errorHandler() {0}
 
 async function showFunction(f) {
     var currentFunction = `<p><b>Function name:</b>  ${f.name}</p>`;
@@ -30,10 +26,11 @@ async function showFunction(f) {
         currentFunction += `<div><label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
     }
     if (f.requiresOracle) {
-        f.printHandler = printHandler;
-        f.inputHander = inputHandler;
-        f.xpraHandler = xpraHandler;
-        f.errorHandler = errorHandler;
+        // f.printHandler = printHandler;
+        // f.inputHander = inputHandler;
+        // f.xpraHandler = xpraHandler;
+        // f.errorHandler = errorHandler;
+        // f.submitHandler = submitHandler;
         const [user, repo, ref] =  $('#contractGithub').val().split("/");
         window["oracleLoader"] = async function () {
             f.oracleData = await githubOracleDownloader(user, repo, ref, f.oracleFolder)
