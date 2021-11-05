@@ -30,7 +30,6 @@ async function showFunction(f) {
         currentFunction += `<div><label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
     }
     if (f.requiresOracle) {
-        document.getElementById('callButton').disabled = true;
         f.printHandler = printHandler;
         f.inputHander = inputHandler;
         f.xpraHandler = xpraHandler;
