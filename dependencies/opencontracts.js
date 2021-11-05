@@ -257,8 +257,8 @@ async function OpenContracts(window) {
                 f.oracleFolder = contract.abi[i].oracleFolder;
                 f.requiresOracle = (f.oracleFolder != undefined);
 		if (f.requiresOracle) {
-		    f.printHandler = alert;
-		    f.inputHandler = prompt;
+		    f.printHandler = async function(message) {alert(message)};
+		    f.inputHandler = async function (message) {return prompt(message)};
 		    f.xpraHandler = async function(target_url, session_url) {
 			    if (window.confirm(`open interactive session to {target_url} in new tab?.`)) {
 				    window.open(session_url,'_blank')
