@@ -144,7 +144,10 @@ async function enclaveSession(interface, f) {
 		    oracleSig = data['oracleSignature'];
 		    oracleProvider = data['oracleProvider'];
 		    registrySig = data['registrySignature'];
-		    // requst hub tx -> f.submitHandler(func)
+		    await f.submitHandler(async function() {
+		        return await requestHubTransaction(data['nonce'], data['calldata'], data['oracleSignature'],
+							    data['oracleProvider'], data['registrySignature']);
+		    });
 		} else if (data['fname'] == 'error') {
 		    await f.errorHandler(data['traceback'])
 		}
