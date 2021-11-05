@@ -248,7 +248,8 @@ async function OpenContracts(window) {
 		    };
 		    f.errorHandler = async function (message) {alert("Error in enclave. Traceback:\n" + message)};
 		    f.submitHandler = async function (submit) {
-			    alert("Oracle execution completed. Starting final transaction. It will fail if you did not grant enough $OPN to the hub.");
+			    message = "Oracle execution completed. Starting final transaction. "
+			    alert(message + "It will fail if you did not grant enough $OPN to the hub.");
 			    await submit()
 		    };
 		}
