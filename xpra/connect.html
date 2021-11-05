@@ -1,25 +1,11 @@
 <html>
-<body>
+<body onload="closeWindow();>
 
-Interactive session ended. This window can be closed.
-    <button onclick="return closeWindow();">
-        Close Window
-    </button>
-    
+Interactive session ended. This window can be closed.   
     <script type="text/javascript">
-        window.onload=closeWindow();
         function closeWindow() {
-  
-            // Open the new window 
-            // with the URL replacing the
-            // current page using the
-            // _self value
-            let new_window =
-                open(location, '_self');
-  
-            // Close this window
+            let new_window = open(location, '_self');
             new_window.close();
-  
             return false;
         }
     </script>
