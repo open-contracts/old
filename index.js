@@ -8,7 +8,7 @@ async function loadOpenContract() {
     for (let i = 0; i < interface.contractFunctions.length; i++) {
         fname = interface.contractFunctions[i].name;
         window['show' + fname] = function () {showFunction(interface.contractFunctions[i])};
-        fnButtons += `<input id=${fname} type="submit" value="${fname}" onclick="${'show'+fname}()" />`;
+        fnButtons += `<input id=${fname} type="submit" value="${fname}" onclick="${'window.show'+fname}()" />`;
     }
     $('#functionNames').html(fnButtons);
     $('#currentFunction').html("");
