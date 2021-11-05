@@ -126,7 +126,7 @@ async function enclaveSession(interface, f) {
         data = JSON.parse(event.data);
         if (data['fname'] == 'return_oracle_ip') {
             ws.close();
-	    if (oracleIP == "N/A") {throw new Error("No enclave available, try again in a bit or try a different registry.")}
+	    if (data['ip'] == "N/A") {throw new Error("No enclave available, try again in a bit or try a different registry.")}
 	    setTimeout(async () => {await connect(data['ip'])}, 11000);
 	}
     }
