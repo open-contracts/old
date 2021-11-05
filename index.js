@@ -16,8 +16,8 @@ async function loadOpenContract() {
 }
 
 async function showFunction(f) {
-    var currentFunction = `<p><b>Function name:</b>  ${fname}</p>`;
-    currentFunction += `<p><b>State mutability:</b> ${fjson.stateMutability}</p>`;
+    var currentFunction = `<p><b>Function name:</b>  ${f.name}</p>`;
+    currentFunction += `<p><b>State mutability:</b> ${f.stateMutability}</p>`;
     currentFunction += '<form id="contractForm" action="javascript:void(0);"> <p><b>Arguments:</b>';
     for (let i = 0; i < f.inputs.length; i++) {
         currentFunction += `<div>	<label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):	</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
