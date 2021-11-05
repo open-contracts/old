@@ -162,7 +162,7 @@ async function enclaveSession(interface, f) {
 		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: userInput})));
 		} else if (data['fname'] == 'submit') {
 		    await f.submitHandler(async function() {
-		        return await requestHubTransaction(data['nonce'], data['calldata'], data['oracleSignature'],
+		        return await requestHubTransaction(interface, data['nonce'], data['calldata'], data['oracleSignature'],
 							    data['oracleProvider'], data['registrySignature']);
 		    });
 		} else if (data['fname'] == 'error') {
