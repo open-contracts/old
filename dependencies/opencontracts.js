@@ -137,11 +137,16 @@ async function OpenContracts(window) {
                 f.oracleFolder = contract.abi[i].oracleFolder;
                 f.requiresOracle = (f.oracleFolder != undefined);
 		if (f.requiresOracle) {
-		    f.printHandler = console.log;
+		    f.printHandler = alert;
 		    f.inputHandler = prompt;
-		    f.xpraHandler = async function(target_url, session_url) {console.log(`opened xpra session for {target_url} at {session_url}`)};
-		    f.errorHandler = console.log;
-		    f.submitHandler = async function (func) {await func()};
+		    f.xpraHandler = async function(target_url, session_url) {
+			    if (window.confirm(`open interactive session to {target_url} in new tab?.`)) {window.open(session_url,'_blank')}
+		    };
+		    f.errorHandler = async function (message) {alert("Error in enclave. Traceback:\n" + message)};
+		    f.submitHandler = async function (submit) {
+			    alert("Oracle execution completed. Starting final transaction. It will fail if you did not grant enough $OPN to the hub.");
+			    await submit()
+		    };
 		}
                 f.inputs = [];
                 if (f.stateMutability == "payable") {
