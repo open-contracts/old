@@ -118,6 +118,7 @@ async function decrypt(AESkey, json) {
 
 async function enclaveSession(interface, f) {
     const registryIP = hexStringToArray(await interface.OPNhub.registryIpList(0)).join(".");
+    console.log(`Trying to connect to registry with IP ${registryIP}.`);
     var ws = new WebSocket("wss://" + registryIP + ":8080/");
     ws.onopen = function () {
         ws.send(JSON.stringify({fname: 'get_oracle_ip'}));
@@ -127,6 +128,7 @@ async function enclaveSession(interface, f) {
         if (data['fname'] == 'return_oracle_ip') {
             ws.close();
 	    if (data['ip'] == "N/A") {throw new Error("No enclave available, try again in a bit or try a different registry.")}
+	    console.log(`Received oracle IP ${data['ip']} from registry. Waiting 11s for it to get ready, then connecting...`);
 	    setTimeout(async () => {await connect(data['ip'])}, 11000);
 	}
     }
