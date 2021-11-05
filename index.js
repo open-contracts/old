@@ -1,5 +1,7 @@
+var interface = null;
+
 async function loadOpenContract() {
-    var interface = await OpenContracts(window);
+    interface = await OpenContracts(window);
     const link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
     const contract_interface = JSON.parse(await (await fetch(new URL(link + "/interface.json"))).text());
     const oc_interface = JSON.parse(await (await fetch('opencontracts_interface.json')).text());
@@ -22,5 +24,11 @@ async function showFunction(f) {
     for (let i = 0; i < f.inputs.length; i++) {
         currentFunction += `<div>	<label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):	</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
     }
+    window['call' + f.name] = async function () {
+        for (let i = 0; i < f.inputs.length; i++) {f.inputs[i].value = $(`#${f.intputs[i].name}`).val()}
+        $('#results').html(await f.call());
+    };
+    currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick="${'window.call'+f.name}()" /> </form>`;
     $('#currentFunction').html(currentFunction);
+    $('#results').html("");
 }
