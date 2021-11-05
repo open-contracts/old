@@ -68,10 +68,6 @@ async function OpenContracts(window) {
                 f.stateMutability = contract.abi[i].stateMutability;
                 f.oracleFolder = contract.abi[i].oracleFolder;
                 f.requiresOracle = (f.oracleFolder != undefined);
-                if (f.requiresOracle) {
-                    f.oracleDownloader = async function () {githubOracleDownload(f.oracleFolder)};
-                    f.ioHandler = null;
-                }
                 f.inputs = [];
                 if (f.stateMutability == "payable") {
                     f.inputs.push({name: "messageValue", type: "uint256", value: null,
