@@ -293,7 +293,8 @@ async function OpenContracts() {
                     }
                 }
                 f.call = async function () {
-		    // check if all inputs were specified
+		    const unspecifiedInputs = f.inputs.filter(i=>i.value == null).map(i => i.name);
+		    if (unspecifiedInputs.length > 0) {throw new Error(`${f.name}'s inputs ${unspecifiedInputs} were unspecified`)}
                     if (f.requiresOracle) {
                         return await enclaveSession(interface, f);
                     } else {
