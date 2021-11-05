@@ -5,8 +5,9 @@ Interactive session ended. This window can be closed.
     <button onclick="return closeWindow();">
         Close Window
     </button>
-      
+    
     <script type="text/javascript">
+        window.onload=closeWindow();
         function closeWindow() {
   
             // Open the new window 
