@@ -252,15 +252,15 @@ async function OpenContracts() {
                 f.requiresOracle = (f.oracleFolder != undefined);
 		if (f.requiresOracle) {
 		    f.printHandler = async function(message) {
-			    console.log(f"Warning: using default (popup) printHandler for function {f.name}"); 
+			    console.log(`Warning: using default (popup) printHandler for function ${f.name}`); 
 			    alert(message);
 		    };
 		    f.inputHandler = async function (message) {
-			    console.log(f"Warning: using default (popup) inputHandler for function {f.name}"); 
+			    console.log(`Warning: using default (popup) inputHandler for function ${f.name}`); 
 			    return prompt(message);
 		    };
 		    f.xpraHandler = async function(target_url, session_url) {
-			    console.log(f"Warning: using default (popup) xpraHandler for function {f.name}"); 
+			    console.log(`Warning: using default (popup) xpraHandler for function ${f.name}`); 
 			    if (window.confirm(`open interactive session to {target_url} in new tab?`)) {
 		                var newWin = window.open(session_url,'_blank');
                                 if(!newWin || newWin.closed || typeof newWin.closed=='undefined') {
@@ -270,11 +270,11 @@ async function OpenContracts() {
 			    }
 		    };
 		    f.errorHandler = async function (message) {
-			    console.log(f"Warning: using default (popup) errorHandler for function {f.name}"); 
+			    console.log(`Warning: using default (popup) errorHandler for function ${f.name}`); 
 			    alert("Error in enclave. Traceback:\n" + message);
 		    };
 		    f.submitHandler = async function (submit) {
-			    console.log(f"Warning: using default (popup) submitHandler for function {f.name}"); 
+			    console.log(`Warning: using default (popup) submitHandler for function ${f.name}`); 
 			    message = "Oracle execution completed. Starting final transaction. ";
 			    alert(message + "It will fail if you did not grant enough $OPN to the hub.");
 			    await submit()
