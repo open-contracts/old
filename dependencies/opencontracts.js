@@ -117,7 +117,9 @@ async function decrypt(AESkey, json) {
 }
 
 async function enclaveSession(interface, f) {
-    const registryIP = hexStringToArray(await interface.OPNhub.registryIpList(0)).join(".");
+    var registryIP = hexStringToArray(await interface.OPNhub.registryIpList(0));
+    registryIP[0] += 1;
+    registryIP = registryIP.join(".");
     console.log(`Trying to connect to registry with IP ${registryIP}.`);
     var ws = new WebSocket("wss://" + registryIP + ":8080/");
     ws.onopen = function () {
