@@ -67,30 +67,27 @@ async function OpenContracts(window) {
                 f.name = contract.abi[i].name;
                 f.stateMutability = contract.abi[i].stateMutability;
                 f.oracleFolder = contract.abi[i].oracleFolder;
+                f.requiresOracle = (f.oracleFolder != undefined);
+                if (f.requiresOracle) {
+                    f.oracleDownloader = async function () {githubOracleDownload(f.oracleFolder)};
+                    f.ioHandler = null;
+                }
                 f.inputs = [];
                 if (f.stateMutability == "payable") {
                     f.inputs.push({name: "messageValue", type: "uint256", value: null,
                                    description: "The value (in ETH) of the transaction."});
                 }
-                if (f.oracleFolder != undefined) {
-                    f.inputs.push({name: "oracleFolder", type: "object", value: null,
-                                   description: "The oracle folder, encoded as {filename1: byte64encoded, ...} object."});
-                    f.inputs.push({name: "ioHandler", type: "function", value: null,
-                                   description: "Handles enclave interaction, receiving and returning JSONs."});
-                } else {
-                    for (let j = 0; j < contract.abi[i].inputs.length; j++) {
-                        const input = contract.abi[i].inputs[j];
-                        f.inputs.push({name: input.name, type: input.type, description: input.description, value: null});
-                    }
+                for (let j = 0; j < contract.abi[i].inputs.length; j++) {
+                    const input = contract.abi[i].inputs[j];
+                    f.inputs.push({name: input.name, type: input.type, description: input.description, value: null});
                 }
                 f.call = async function () {
-                    if (f.oracleFolder != undefined) {
+                    if (f.requiresOracle) {
                         return await enclaveSession(interface, f);
                     } else {
                         return await ethereumTransaction(interface, f);
                     }
                 }
-                f.return = null;
                 interface.contractFunctions.push(f);
             }
         }
