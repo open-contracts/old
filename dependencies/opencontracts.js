@@ -97,6 +97,24 @@ async function requestHubTransaction(interface, nonce, calldata, oracleSignature
     );
 }
 
+async function encrypt(AESkey, json) {
+    const nonce = interface.window.crypto.getRandomValues(new Uint8Array(12));
+    const data = new TextEncoder().encode(JSON.stringify(json));
+    const ciphertext = new Uint8Array(await interface.window.crypto.subtle.encrypt({ name: "AES-GCM", iv: nonce}, AESkey, data));
+    var encrypted = new (ciphertext.constructor)(ciphertext.length + nonce.length);
+    encrypted.set(ciphertext);
+    encrypted.set(nonce, ciphertext.length);
+    const encryptedB64 = Base64.fromUint8Array(new Uint8Array(encrypted));
+    return {fname: "encrypted", payload: encryptedB64};
+}
+
+async function decrypt(AESkey, json) {
+    const encrypted = Base64.toUint8Array(json['payload']);
+    const ciphertext = encrypted.slice(0, encrypted.length-12);
+    const nonce = encrypted.slice(encrypted.length-12, encrypted.length);
+    const decrypted = await interface.window.crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce}, AESkey, ciphertext);
+    return JSON.parse(new TextDecoder().decode(decrypted));
+}
 
 async function enclaveSession(interface, f) {
     const registryIP = hexStringToArray(await interface.OPNhub.registryIpList(0)).join(".");
