@@ -34,7 +34,8 @@ async function showFunction(f) {
         f.inputHander = inputHandler;
         f.xpraHandler = xpraHandler;
         f.errorHandler = errorHandler;
-        window["oracleLoader"] = async function () {f.oracleData = await githubOracleDownloader($('#contractGithub').val(), f.oracleFolder)};
+        const [user, repo, ref] =  $('#contractGithub').val().split("/");
+        window["oracleLoader"] = async function () {f.oracleData = await githubOracleDownloader(user, repo, ref, f.oracleFolder)};
         currentFunction += `<div><label for="loadOracle">Load Oracle Data (this may take a bit): </label><input id="loadOracle" type="submit" value="Load" onclick="window.oracleLoader()" /></div>`;       
     }
 
