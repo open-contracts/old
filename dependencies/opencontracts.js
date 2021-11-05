@@ -161,11 +161,6 @@ async function enclaveSession(interface, f) {
 		    userInput = await f.inputHandler(data['message']);
 		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: userInput})));
 		} else if (data['fname'] == 'submit') {
-		    nonce = '0x' + data['nonce'];
-		    calldata = '0x' + data['calldata'];
-		    oracleSig = data['oracleSignature'];
-		    oracleProvider = data['oracleProvider'];
-		    registrySig = data['registrySignature'];
 		    await f.submitHandler(async function() {
 		        return await requestHubTransaction(data['nonce'], data['calldata'], data['oracleSignature'],
 							    data['oracleProvider'], data['registrySignature']);
@@ -260,8 +255,12 @@ async function OpenContracts(window) {
 		    f.printHandler = async function(message) {alert(message)};
 		    f.inputHandler = async function (message) {return prompt(message)};
 		    f.xpraHandler = async function(target_url, session_url) {
-			    if (window.confirm(`open interactive session to {target_url} in new tab?.`)) {
-				    window.open(session_url,'_blank')
+			    if (window.confirm(`open interactive session to {target_url} in new tab?`)) {
+		                var newWin = window.open(session_url,'_blank');
+                                if(!newWin || newWin.closed || typeof newWin.closed=='undefined') {
+				    alert("Could not open new window. Set your browser to allow popups and click ok.");
+				    f.xpraHandler(target_url, session_url);
+				}
 			    }
 		    };
 		    f.errorHandler = async function (message) {alert("Error in enclave. Traceback:\n" + message)};
