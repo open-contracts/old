@@ -25,7 +25,7 @@ async function showFunction(f) {
         currentFunction += `<div>	<label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):	</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
     }
     window['call' + f.name] = async function () {
-        for (let i = 0; i < f.inputs.length; i++) {f.inputs[i].value = $(`#${f.intputs[i].name}`).val()}
+        for (let i = 0; i < f.inputs.length; i++) {f.inputs[i].value = $(`#${f.inputs[i].name}`).val()}
         $('#results').html(await f.call());
     };
     currentFunction +=`<br /> <input id="callButton" type="submit" value="Call" onclick="${'window.call'+f.name}()" /> </form>`;
