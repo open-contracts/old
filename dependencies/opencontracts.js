@@ -126,9 +126,9 @@ async function enclaveSession(interface, f) {
     var timer = setInterval(() => {secondsPassed++; if (secondsPassed>30) {clearInterval(timer)}}, 1000);
     ws.onerror = function(event) {
         if (secondsPassed < 10) {
-	    throw new Error("Registry Root Cert not trusted by the browser.");
+	    throw new Error("Early WebSocket failure. Probable reason: registry root cert not trusted by the client.");
 	} else {
-	    throw new Error("No registry available at this IP.");
+	    throw new Error("Late WebSocket failure. Probable reason: no registry available at this IP.");
 	}
     }; 
     ws.onopen = function () {
