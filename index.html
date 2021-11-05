@@ -43,20 +43,5 @@ Make sure you have Metamask installed and are connected to the Ropsten testnet. 
 <hr>
 Make sure you install <a href="registryRootCA.crt"> this certificate </a>  as a trusted (root) certificate authority in your browser/system.
 <p>
-<form id="getOracleIP"  action="javascript:void(0);">
-	<label for="registryIP"><b>Registry IP:</b></label>
-	<input id="registryIP" type="text" value="" size="60" disabled="true"/>
-	<script type="text/javascript">document.getElementById("registryIP").value = new URLSearchParams(window.location.search).get("registryIP")</script>
-</form><br><br>
-
-<form id="connectOracle" action="javascript:void(0);">
-	<label for="oracleIP"><b>Oracle IP:</b></label>
-	<input id="oracleIP" type="text" value="" size="60"  disabled="true"/>
-</form>
-<u>Enclave Output:</u><br>
-<hr>
-<div id="enclaveOutput"></div>
-<hr>
-<div id="hubTX"></div>
 </body>
 </html>
