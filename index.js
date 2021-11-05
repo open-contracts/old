@@ -9,7 +9,7 @@ async function loadOpenContract() {
         fname = interface.contractFunctions[i].name;
         fnButtons += `<input id=${fname} type="submit" value="${fname}" onclick="showFunction(interface.contractFunctions[i])" />`;
     }
-    $('#functionNames').html(fnames);
+    $('#functionNames').html(fnButtons);
     $('#currentFunction').html("");
     $('#results').html("");
 }
