@@ -9,7 +9,17 @@ async function loadOpenContract() {
         fname = interface.contractFunctions[i].name;
         fnButtons += `<input id=${fname} type="submit" value="${fname}" onclick="showFunction(interface.contractFunctions[i])" />`;
     }
-   $('#functionNames').html(fnames);
-   $('#currentFunction').html("");
-   $('#results').html("");
+    $('#functionNames').html(fnames);
+    $('#currentFunction').html("");
+    $('#results').html("");
+}
+
+async function showFunction(f) {
+    var currentFunction = `<p><b>Function name:</b>  ${fname}</p>`;
+    currentFunction += `<p><b>State mutability:</b> ${fjson.stateMutability}</p>`;
+    currentFunction += '<form id="contractForm" action="javascript:void(0);"> <p><b>Arguments:</b>';
+    for (let i = 0; i < f.inputs.length; i++) {
+        currentFunction += `<div>	<label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):	</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
+    }
+    $('#currentFunction').html(currentFunction);
 }
