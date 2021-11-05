@@ -35,6 +35,7 @@ async function showFunction(f) {
         window["oracleLoader"] = async function () {
             f.oracleData = await githubOracleDownloader(user, repo, ref, f.oracleFolder)
             document.getElementById('callButton').disabled = false;
+            document.getElementById('loadOracle').disabled = true;
         };
         currentFunction += `<div><label for="loadOracle">Load Oracle Data (this may take a bit): </label><input id="loadOracle" type="submit" value="Load" onclick="window.oracleLoader()" /></div>`;  
     }
@@ -44,6 +45,6 @@ async function showFunction(f) {
     };
     currentFunction +=`<br> <br> <input id="callButton" type="submit" value="Call" onclick="${'window.call' + f.name}()"/> </form>`;
     $('#currentFunction').html(currentFunction);
-    document.getElementById('callButton').disabled = !f.requiresOracle;
+    document.getElementById('callButton').disabled = f.requiresOracle;
     $('#results').html("");
 }
