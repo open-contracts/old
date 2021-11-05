@@ -82,10 +82,13 @@ async function requestHubTransaction(interface, nonce, calldata, oracleSignature
 	    sig => interface.contract.interface.getSighash(sig) == calldata.slice(0,10)
     )[0];
     call = interface.contract.interface.decodeFunctionData(calldata.slice(0,10), calldata);
-    estimateHub = await interface.OPNhub.connect(interface.signer).estimateGas["forwardCall(address,bytes4,bytes,bytes,address,bytes)"](
+    estimateHub = await interface.OPNhub.connect(interface.signer).estimateGas[
+	    "forwardCall(address,bytes4,bytes,bytes,address,bytes)"
+    ](
 	    contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature
     );
-    //estimateForwarder = await interface.OPNforwarder.estimateGas["forwardCall(address,bytes)"](contract.address, calldata, overrides={from: OPNhub.address});
+    //estimateForwarder = await interface.OPNforwarder.estimateGas["forwardCall(address,bytes)"](
+    //   contract.address, calldata, overrides={from: OPNhub.address});
     estimateContract = await interface.contract.estimateGas[fn](...call, overrides={from: OPNforwarder.address});
     estimateTotal = estimateHub.add(estimateContract);
     interface.OPNhub.connect(interface.signer).forwardCall(
@@ -122,7 +125,8 @@ async function enclaveSession(interface, f) {
                 [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
 		ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
 		const signThis = ethers.utils.arrayify("0x" + data['signThis']);
-		ws.send(JSON.stringify({fname: 'submit_signature', signature: await interface.signer.signMessage(signThis)}));
+		ws.send(JSON.stringify({fname: 'submit_signature',
+					signature: await interface.signer.signMessage(signThis)}));
 		f.oracleData.fname = 'submit_oracle';
 		ws.send(JSON.stringify(await encrypt(AESkey, f.oracleData)));
 		ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
