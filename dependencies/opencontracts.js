@@ -122,7 +122,7 @@ async function enclaveSession(interface, f) {
                 [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
 		ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
 		const signThis = ethers.utils.arrayify("0x" + data['signThis']);
-		ws.send(JSON.stringify({fname: 'submit_signature', signature: await user.signMessage(signThis)}));
+		ws.send(JSON.stringify({fname: 'submit_signature', signature: await interface.signer.signMessage(signThis)}));
 		f.oracleData.fname = 'submit_oracle';
 		ws.send(JSON.stringify(await encrypt(AESkey, f.oracleData)));
 		ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
