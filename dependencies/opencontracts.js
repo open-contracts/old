@@ -126,12 +126,12 @@ async function enclaveSession(interface, f) {
         data = JSON.parse(event.data);
         if (data['fname'] == 'return_oracle_ip') {
             ws.close();
+	    if (oracleIP == "N/A") {throw new Error("No enclave available, try again in a bit or try a different registry.")}
 	    setTimeout(async () => {await connect(data['ip'])}, 11000);
 	}
     }
     // wd.onerror(-> distinguish bw cert n/a and enclave n/a)
     async function connect(oracleIP) {
-        if (oracleIP == "N/A") {throw new Error("No enclave available, try again in a bit or try a different registry.")}
 	var ws = new WebSocket("wss://" + oracleIP + ":8080/");
 	var ETHkey = null;
 	var AESkey = null;
