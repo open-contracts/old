@@ -42,6 +42,7 @@ async function showFunction(f) {
         for (let i = 0; i < f.inputs.length; i++) {f.inputs[i].value = $(`#${f.inputs[i].name}`).val()}
         $('#results').html(await f.call());
     };
+    console.log(`"${f.requiresOracle}"`);
     currentFunction +=`<br> <br> <input id="callButton" type="submit" value="Call" onclick="${'window.call' + f.name}()" disabled="${f.requiresOracle}"/> </form>`;
     $('#currentFunction').html(currentFunction);
     $('#results').html("");
