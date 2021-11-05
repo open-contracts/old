@@ -10,7 +10,6 @@ async function enclaveSession(interface, f) {
     ws.onopen = function () {
         ws.send(JSON.stringify({fname: 'get_oracle_ip'}));
     }
-    var oracleIP = new Promise();
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
         if (data['fname'] == 'return_oracle_ip') {
