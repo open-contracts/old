@@ -19,7 +19,7 @@ async function ethereumTransaction(interface, f) {
 
 async function OpenContracts(window) {
     const interface = {};
-    
+    interface.window = window;
     // detect metamask
     if (interface.window.ethereum) {
         await init()
