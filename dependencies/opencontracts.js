@@ -297,9 +297,12 @@ async function OpenContracts() {
                 f.call = async function () {
 		    const unspecifiedInputs = f.inputs.filter(i=>i.value == null).map(i => i.name);
 		    if (unspecifiedInputs.length > 0) {
-			    throw new Error(`${f.name}'s inputs ${unspecifiedInputs} were unspecified`);
+			    throw new Error(`The following inputs to "${f.name}" were unspecified:  ${unspecifiedInputs}`);
 		    }
                     if (f.requiresOracle) {
+			if (f.oracleData == undefined) {
+				throw new Error(`No oracleData specified for "${f.name}".`)
+			};
                         return await enclaveSession(interface, f);
                     } else {
                         return await ethereumTransaction(interface, f);
