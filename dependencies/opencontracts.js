@@ -14,7 +14,7 @@ async function enclaveSession(interface, f) {
         data = JSON.parse(event.data);
         if (data['fname'] == 'return_oracle_ip') {
             ws.close();
-            await connect(data['ip']);
+	    setTimeout(async () => {await connect(data['ip'])}, 11000);
 	}
     }
     // wd.onerror(-> distinguish bw cert n/a and enclave n/a)
