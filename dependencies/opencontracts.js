@@ -5,9 +5,9 @@ function hexStringToArray(hexString) {
 }
 
 function b64Url2Buff(b64urlstring) {
-  return new Uint8Array(atob(b64urlstring.replace(/-/g, '+').replace(/_/g, '/')).split('').map(val => {
-    return val.charCodeAt(0);
-  }));
+  return new Uint8Array(atob(b64urlstring.replace(/-/g, '+').replace(/_/g, '/')).split('').map(
+	  val => {return val.charCodeAt(0);}
+  ));
 }
 
 
@@ -62,13 +62,37 @@ async function extractContentIfValid(attestation_data) {
     // TODO: Add hash ceck
     const ETHkey = new TextDecoder().decode(attestation_doc['public_key']);
     const RSAraw = hexStringToArray(new TextDecoder().decode(attestation_doc['user_data'])).buffer;
-    const RSAkey = await crypto.subtle.importKey('spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-256"}, true, ["encrypt"]);
-    const AESkey = await crypto.subtle.generateKey({"name":"AES-GCM","length":256},true,['encrypt','decrypt']);
+    const RSAkey = await crypto.subtle.importKey(
+	    'spki', RSAraw, {name: "RSA-OAEP", hash: "SHA-256"}, true, ["encrypt"]
+    );
+    const AESkey = await crypto.subtle.generateKey(
+	    {"name":"AES-GCM","length":256},true,['encrypt','decrypt']
+    );
     const rawAES = new Uint8Array(await crypto.subtle.exportKey('raw', AESkey));
-    const encryptedAESkey = await Base64.fromUint8Array(new Uint8Array(await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES)));
+    const encryptedAESkey = await Base64.fromUint8Array(
+	    new Uint8Array(await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, RSAkey, rawAES))
+    );
     return [ETHkey, AESkey, encryptedAESkey];
 }
 
+
+
+async function requestHubTransaction(interface, nonce, calldata, oracleSignature, oracleProvider, registrySignature) {
+    fn = Object.getOwnPropertyNames(interface.contract.interface.functions).filter(
+	    sig => interface.contract.interface.getSighash(sig) == calldata.slice(0,10)
+    )[0];
+    call = interface.contract.interface.decodeFunctionData(calldata.slice(0,10), calldata);
+    estimateHub = await interface.OPNhub.connect(interface.signer).estimateGas["forwardCall(address,bytes4,bytes,bytes,address,bytes)"](
+	    contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature
+    );
+    //estimateForwarder = await interface.OPNforwarder.estimateGas["forwardCall(address,bytes)"](contract.address, calldata, overrides={from: OPNhub.address});
+    estimateContract = await interface.contract.estimateGas[fn](...call, overrides={from: OPNforwarder.address});
+    estimateTotal = estimateHub.add(estimateContract);
+    interface.OPNhub.connect(interface.signer).forwardCall(
+	    interface.contract.address, nonce, calldata, oracleSignature,
+	    oracleProvider, registrySignature, overrides={gasLimit: estimateTotal}
+    );
+}
 
 
 async function enclaveSession(interface, f) {
@@ -97,7 +121,8 @@ async function enclaveSession(interface, f) {
 	    if (data['fname'] == "attestation") {
                 [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
 		ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
-		ws.send(JSON.stringify({fname: 'submit_signature', signature: await signHex(data['signThis'])}));
+		const signThis = ethers.utils.arrayify("0x" + data['signThis']);
+		ws.send(JSON.stringify({fname: 'submit_signature', signature: await user.signMessage(signThis)}));
 		f.oracleData.fname = 'submit_oracle';
 		ws.send(JSON.stringify(await encrypt(AESkey, f.oracleData)));
 		ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
@@ -144,9 +169,13 @@ async function githubOracleDownloader(user, repo, ref, dir) {
     const downloadAsBase64 = async function (link) {
         const url = new URL(link);
         const response = await fetch(url);
-        return btoa(new Uint8Array(await response.arrayBuffer()).reduce((data, byte)=> {return data + String.fromCharCode(byte);}, ''));
+        return btoa(new Uint8Array(await response.arrayBuffer()).reduce(
+		(data, byte) => {return data + String.fromCharCode(byte);}, '')
+	);
     }
-    const downloads = Promise.all(Object.entries(links).map(async ([file, link]) => [file, await downloadAsBase64(link)]));
+    const downloads = Promise.all(Object.entries(links).map(
+	    async ([file, link]) => [file, await downloadAsBase64(link)]
+    ));
     return Object.fromEntries(await downloads);
 }
 
@@ -206,7 +235,9 @@ async function OpenContracts(window) {
 		    f.printHandler = alert;
 		    f.inputHandler = prompt;
 		    f.xpraHandler = async function(target_url, session_url) {
-			    if (window.confirm(`open interactive session to {target_url} in new tab?.`)) {window.open(session_url,'_blank')}
+			    if (window.confirm(`open interactive session to {target_url} in new tab?.`)) {
+				    window.open(session_url,'_blank')
+			    }
 		    };
 		    f.errorHandler = async function (message) {alert("Error in enclave. Traceback:\n" + message)};
 		    f.submitHandler = async function (submit) {
@@ -222,7 +253,8 @@ async function OpenContracts(window) {
                 if (!f.requiresOracle) {
                     for (let j = 0; j < contract.abi[i].inputs.length; j++) {
                         const input = contract.abi[i].inputs[j];
-                        f.inputs.push({name: input.name, type: input.type, description: input.description, value: null});
+                        f.inputs.push({name: input.name, type: input.type,
+				       description: input.description, value: null});
                     }
                 }
                 f.call = async function () {
