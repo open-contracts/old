@@ -47,7 +47,7 @@ async function enclaveSession(interface, f) {
     }
     // wd.onerror(-> distinguish bw cert n/a and enclave n/a)
     async function connect(oracleIP) {
-        if (oracleIP == "N/A") {throw "No enclave available, try again in a bit or try a different registry."}
+        if (oracleIP == "N/A") {throw new Error("No enclave available, try again in a bit or try a different registry.")}
 	var ws = new WebSocket("wss://" + oracleIP + ":8080/");
 	var ETHkey = null;
 	var AESkey = null;
@@ -63,7 +63,7 @@ async function enclaveSession(interface, f) {
 		ws.send(JSON.stringify(await encrypt(AESkey, f.oracleData)));
 		ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
 	    } else if (data['fname'] == "busy") {
-	        throw "Oracle is busy. Request a new IP.";
+	        throw new Error("Oracle is busy. Request a new IP.");
 	    }
 	    if (data['fname'] == 'encrypted') {
 	        data = await decrypt(AESkey, data);
@@ -131,7 +131,7 @@ async function OpenContracts(window) {
             interface.network = (await interface.provider.getNetwork()).name;
             interface.signer = interface.provider.getSigner();
         } else {
-            throw "No Metamask detected.";
+            throw new Error("No Metamask detected.");
         }
     }
     
@@ -139,7 +139,7 @@ async function OpenContracts(window) {
     interface.parseContracts = function (oc_interface, contract_interface) {
         if (!(interface.network in oc_interface)) {
             var errormsg = "Your Metamask is set to " + interface.network + ", which is not supported by Open Contracts.";
-            throw errormsg + " Set your Metamask to one of: " +  Object.keys(oc_interface);
+            throw new Error(errormsg + " Set your Metamask to one of: " +  Object.keys(oc_interface));
         } else {
             const token = oc_interface[interface.network].token;
             interface.OPNtoken = new ethers.Contract(token.address, token.abi, interface.provider);
@@ -151,7 +151,7 @@ async function OpenContracts(window) {
         
         if (!(interface.network in contract_interface)) {
             var errormsg = "Your Metamask is set to " + interface.network + ", which is not supported by this contract.";
-            throw errormsg + " Set your Metamask to one of: " +  Object.keys(contract_interface);
+            throw new Error(errormsg + " Set your Metamask to one of: " +  Object.keys(contract_interface));
         } else {
             const contract = contract_interface[interface.network];
             interface.contract = new ethers.Contract(contract.address, contract.abi, interface.provider);
