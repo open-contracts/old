@@ -4,33 +4,6 @@ function hexStringToArray(hexString) {
     return new Uint8Array(integers);
 }
 
-
-async function getOracleIP() {
-    var registryIP = await OPNhub.registryIpList(0);
-    var registryIP = hexStringToArray(registryIP).join(".");
-    $('#registryIP').val(registryIP);
-    console.log("wss://" + registryIP + ":8080/");
-    var ws = new WebSocket("wss://" + registryIP + ":8080/");
-    ws.onopen = function () {
-        console.log("websocket is open now.");
-        ws.send(JSON.stringify({fname: 'get_oracle_ip'}));
-    }
-    ws.onmessage = async function (event) {
-        data = JSON.parse(event.data);
-        if (data['fname'] == 'return_oracle_ip') {
-            var oracleIP = data['ip'];
-	    if (oracleIP  == "N/A") {
-                document.getElementById("callButton").disabled = false;
-		$('#oracleIP').val("Curently none available. Try again in a bit.");
-	    } else {
-                $('#oracleIP').val(oracleIP);
-                ws.close();
-	        setTimeout(() => {document.getElementById("enclaveOutput").innerHTML += "Connecting to enclave... <br>"; connectOracle()}, 11000);
-	    }
-        }
-    }
-}
-
 async function enclaveSession(interface, f) {
     const registryIP = hexStringToArray(await interface.OPNhub.registryIpList(0)).join(".");
     var ws = new WebSocket("wss://" + registryIP + ":8080/");
