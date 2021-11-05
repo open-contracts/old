@@ -11,7 +11,7 @@ function b64Url2Buff(b64urlstring) {
 }
 
 
-const rootcert = `-----BEGIN CERTIFICATE-----
+const awsNitroRootCert = `-----BEGIN CERTIFICATE-----
 MIICETCCAZagAwIBAgIRAPkxdWgbkK/hHUbMtOTn+FYwCgYIKoZIzj0EAwMwSTEL
 MAkGA1UEBhMCVVMxDzANBgNVBAoMBkFtYXpvbjEMMAoGA1UECwwDQVdTMRswGQYD
 VQQDDBJhd3Mubml0cm8tZW5jbGF2ZXMwHhcNMTkxMDI4MTMyODA1WhcNNDkxMDI4
@@ -43,7 +43,7 @@ async function extractContentIfValid(attestation_data) {
     .then(key=>COSE.verify(b64Url2Buff(key['x']), b64Url2Buff(key['y']), cose));
 
     // check certificate path
-    root = new x509.X509Certificate(rootcert);
+    root = new x509.X509Certificate(awsNitroRootCert);
     var certs = [root];
     const cabundle = attestation_doc['cabundle'];
     for (var i=1; i<cabundle.length; i++) {
