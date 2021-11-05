@@ -43,7 +43,7 @@ async function enclaveSession(interface, f) {
         if (data['fname'] == 'return_oracle_ip') {
             oracleIP.resolve(data['ip']);
             ws.close();
-	    }
+	}
     }
     var oracleIP = await oracleIP;
     if (oracleIP  == "N/A") {throw "Curently no oracle enclave available. Try again in a bit."} 
