@@ -122,6 +122,15 @@ async function enclaveSession(interface, f) {
     registryIP = registryIP.join(".");
     console.log(`Trying to connect to registry with IP ${registryIP}.`);
     var ws = new WebSocket("wss://" + registryIP + ":8080/");
+    var secondsPassed = 0;
+    var timer = setInterval(() => {secondsPassed++; if (secondsPassed>30) {clearInterval(timer)}}, 1000);
+    ws.onerror = function(event) {
+        if (secondsPassed < 10) {
+	    throw new Error("Registry Root Cert not trusted by the browser.");
+	} else {
+	    throw new Error("No registry available at this IP.");
+	}
+    }; 
     ws.onopen = function () {
         ws.send(JSON.stringify({fname: 'get_oracle_ip'}));
     }
