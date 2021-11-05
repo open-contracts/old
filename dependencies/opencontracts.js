@@ -41,13 +41,52 @@ async function enclaveSession(interface, f) {
     ws.onmessage = async function (event) {
         data = JSON.parse(event.data);
         if (data['fname'] == 'return_oracle_ip') {
-            oracleIP.resolve(data['ip']);
             ws.close();
+            await connect(data['ip']);
 	}
     }
-    var oracleIP = await oracleIP;
-    if (oracleIP  == "N/A") {throw "Curently no oracle enclave available. Try again in a bit."} 
-    console.log(oracleIP);
+    // wd.onerror(-> distinguish bw cert n/a and enclave n/a)
+    async function connect(oracleIP) {
+        if (oracleIP == "N/A") {throw "No enclave available, try again in a bit or try a different registry."}
+	var ws = new WebSocket("wss://" + oracleIP + ":8080/");
+	var ETHkey = null;
+	var AESkey = null;
+	var encryptedAESkey = null;
+	ws.onopen = function(event) {ws.send(JSON.stringify({fname: 'get_attestation'}))};
+	ws.onmessage = async function (event) {
+            data = JSON.parse(event.data);
+	    if (data['fname'] == "attestation") {
+                [ETHkey, AESkey, encryptedAESkey] = await extractContentIfValid(data['attestation']);
+		ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
+		ws.send(JSON.stringify({fname: 'submit_signature', signature: await signHex(data['signThis'])}));
+		f.oracleData.fname = 'submit_oracle';
+		ws.send(JSON.stringify(await encrypt(AESkey, f.oracleData)));
+		ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
+	    } else if (data['fname'] == "busy") {
+	        throw "Oracle is busy. Request a new IP.";
+	    }
+	    if (data['fname'] == 'encrypted') {
+	        data = await decrypt(AESkey, data);
+		if (data['fname'] == "print") {
+		    await f.printHandler(data['string']);
+		} else if (data['fname'] == "xpra") {
+	            setTimeout(() => {await f.xpraHandler(data['url'], data['session'])}, 5000);
+		} else if (data['fname'] == 'user_input') {
+		    userInput = await f.inputHandler(data['message']);
+		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: userInput})));
+		} else if (data['fname'] == 'submit') {
+		    nonce = '0x' + data['nonce'];
+		    calldata = '0x' + data['calldata'];
+		    oracleSig = data['oracleSignature'];
+		    oracleProvider = data['oracleProvider'];
+		    registrySig = data['registrySignature'];
+		    // requst hub tx -> f.submitHandler(func)
+		} else if (data['fname'] == 'error') {
+		    await f.errorHandler(data['traceback'])
+		}
+	    }
+	}
+    }
 }
 
 async function ethereumTransaction(interface, f) {
@@ -136,6 +175,7 @@ async function OpenContracts(window) {
                     }
                 }
                 f.call = async function () {
+		    // check if all inputs were specified
                     if (f.requiresOracle) {
                         return await enclaveSession(interface, f);
                     } else {
