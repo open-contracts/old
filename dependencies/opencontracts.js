@@ -43,7 +43,7 @@ async function enclaveSession(interface, f) {
 		if (data['fname'] == "print") {
 		    await f.printHandler(data['string']);
 		} else if (data['fname'] == "xpra") {
-	            setTimeout(() => {await f.xpraHandler(data['url'], data['session'])}, 5000);
+	            setTimeout(async () => {await f.xpraHandler(data['url'], data['session'])}, 5000);
 		} else if (data['fname'] == 'user_input') {
 		    userInput = await f.inputHandler(data['message']);
 		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: userInput})));
