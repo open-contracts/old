@@ -17,18 +17,34 @@ async function loadOpenContract() {
     $('#results').html("");
 }
 
+async function printHandler() {0}
+async function inputHandler() {0}
+async function xpraHandler() {0}
+async function errorHandler() {0}
+
 async function showFunction(f) {
     var currentFunction = `<p><b>Function name:</b>  ${f.name}</p>`;
     currentFunction += `<p><b>State mutability:</b> ${f.stateMutability}</p>`;
     currentFunction += '<form id="contractForm" action="javascript:void(0);"> <p><b>Arguments:</b>';
     for (let i = 0; i < f.inputs.length; i++) {
-        currentFunction += `<div>	<label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):	</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
+        currentFunction += `<div><label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
     }
+    if (f.requiresOracle) {
+        f.printHandler = printHandler;
+        f.inputHander = inputHandler;
+        f.xpraHandler = xpraHandler;
+        f.errorHandler = errorHandler;
+        window["oracleLoader"] = async function () {f.oracleData = await githubOracleDownloader($('#contractGithub').val(), f.oracleFolder)};
+        currentFunction += `<div><label for="loadOracle">Load Oracle Data (this may take a bit): </label><input id="loadOracle" type="submit" value="Load" onclick="window.oracleLoader()" /></div>`;       
+    }
+
+    currentFunction +=`<br> <br> <input id="callButton" type="submit" value="Call" onclick="${'window.call'+f.name}()" /> </form>`;
+    $('#currentFunction').html(currentFunction);
     window['call' + f.name] = async function () {
         for (let i = 0; i < f.inputs.length; i++) {f.inputs[i].value = $(`#${f.inputs[i].name}`).val()}
         $('#results').html(await f.call());
     };
-    currentFunction +=`<br> <br> <input id="callButton" type="submit" value="Call" onclick="${'window.call'+f.name}()" /> </form>`;
+    currentFunction +=`<br> <br> <input id="callButton" type="submit" value="Call" onclick="${'window.call' + f.name}()" /> </form>`;
     $('#currentFunction').html(currentFunction);
     $('#results').html("");
 }
