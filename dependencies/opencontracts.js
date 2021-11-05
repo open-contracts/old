@@ -84,9 +84,11 @@ async function OpenContracts(window) {
                     f.inputs.push({name: "messageValue", type: "uint256", value: null,
                                    description: "The value (in ETH) of the transaction."});
                 }
-                for (let j = 0; j < contract.abi[i].inputs.length; j++) {
-                    const input = contract.abi[i].inputs[j];
-                    f.inputs.push({name: input.name, type: input.type, description: input.description, value: null});
+                if (!f.requiresOracle) {
+                    for (let j = 0; j < contract.abi[i].inputs.length; j++) {
+                        const input = contract.abi[i].inputs[j];
+                        f.inputs.push({name: input.name, type: input.type, description: input.description, value: null});
+                    }
                 }
                 f.call = async function () {
                     if (f.requiresOracle) {
