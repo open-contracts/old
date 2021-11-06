@@ -1,10 +1,3 @@
-import * as mBase64 from './base64.js';
-import * as mCBOR from './cbor.js';
-import * as mCOSE from './cose.js';
-import * as mGITHUB_FILES from './github_files.js';
-import * as mx509 from './x509.js';
-
-
 function hexStringToArray(hexString) {
     var pairs = hexString.match(/[\dA-F]{2}/gi);
     var integers = pairs.map(function(s) {return parseInt(s, 16);});
