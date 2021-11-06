@@ -171,8 +171,8 @@ async function enclaveSession(interface, f) {
 		    xpraFinished = false;
 		    const xpraExit = new Promise((resolve, reject) => {setInterval(()=> {if (xpraFinished) {resolve(true)}}, 1000)});
 	            setTimeout(async () => {await f.xpraHandler(data['url'], data['session'], xpraExit)}, 5000);
-		} else if (data['xpra_finished']) {
-                    console.log("xpra finished.");			
+		} else if (data["fname"] == 'xpra_finished') {
+                    console.log("xpra finished.");		
 		    xpraFinished = true;
 		} else if (data['fname'] == 'user_input') {
 		    userInput = await f.inputHandler(data['message']);
