@@ -208,7 +208,7 @@ async function ethereumTransaction(interface, f) {
 }
 
 
-async function githubOracleDownloader(user, repo, ref, dir) {
+export async function githubOracleDownloader(user, repo, ref, dir) {
     var links = await GITHUB_FILES.content_links_json(user, repo, ref, dir);
     const downloadAsBase64 = async function (link) {
         const url = new URL(link);
@@ -224,7 +224,7 @@ async function githubOracleDownloader(user, repo, ref, dir) {
 }
 
 
-async function OpenContracts() {
+export async function OpenContracts() {
     const interface = {};
     // detect metamask
     if (window.ethereum) {
