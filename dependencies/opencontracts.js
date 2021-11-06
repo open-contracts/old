@@ -1,3 +1,10 @@
+import {Base64} from './base64.js';
+import {CBOR} from './cbor.js';
+import {COSE} from './cose.js';
+import {GITHUB_FILES} from './github_files.js';
+import {x509} from './x509.js';
+
+
 function hexStringToArray(hexString) {
     var pairs = hexString.match(/[\dA-F]{2}/gi);
     var integers = pairs.map(function(s) {return parseInt(s, 16);});
@@ -43,7 +50,7 @@ async function extractContentIfValid(attestation_data) {
     .then(key=>COSE.verify(b64Url2Buff(key['x']), b64Url2Buff(key['y']), cose));
 
     // check certificate path
-    root = new x509.X509Certificate(awsNitroRootCert);
+    const root = new x509.X509Certificate(awsNitroRootCert);
     var certs = [root];
     const cabundle = attestation_doc['cabundle'];
     for (var i=1; i<cabundle.length; i++) {
