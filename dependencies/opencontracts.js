@@ -147,7 +147,7 @@ async function enclaveSession(interface, f) {
 	var ETHkey = null;
 	var AESkey = null;
 	var encryptedAESkey = null;
-	var xpraComplete = false;
+	var xpraFinished = null;
 	ws.onopen = function(event) {ws.send(JSON.stringify({fname: 'get_attestation'}))};
 	ws.onmessage = async function (event) {
             data = JSON.parse(event.data);
@@ -168,11 +168,11 @@ async function enclaveSession(interface, f) {
 		if (data['fname'] == "print") {
 		    await f.printHandler(data['string']);
 		} else if (data['fname'] == "xpra") {
-		    xpraComplete = false;
-		    const xpraExit = new Promise((resolve, reject) => {setInterval(()=> if (xpraComplete) {resolve(true)}, 1000)});
+		    xpraFinished = false;
+		    const xpraExit = new Promise((resolve, reject) => {setInterval(()=> if (xpraFinished) {resolve(true)}, 1000)});
 	            setTimeout(async () => {await f.xpraHandler(data['url'], data['session'], xpraExit)}, 5000);
-		} else if (data['xpraExit']) {
-		    xpraComplete = true;
+		} else if (data['xpra_finished']) {
+		    xpraFinished = true;
 		} else if (data['fname'] == 'user_input') {
 		    userInput = await f.inputHandler(data['message']);
 		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: userInput})));
