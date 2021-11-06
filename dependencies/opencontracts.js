@@ -275,13 +275,14 @@ async function OpenContracts() {
 			    console.log(`Warning: using default (popup) inputHandler for function ${f.name}`); 
 			    return prompt(message);
 		    };
-		    f.xpraHandler = async function(target_url, session_url) {
+		    f.xpraHandler = async function(targetUrl, sessionUrl, xpraExit) {
 			    console.log(`Warning: using default (popup) xpraHandler for function ${f.name}`); 
-			    if (window.confirm(`open interactive session to {target_url} in new tab?`)) {
-		                var newWin = window.open(session_url,'_blank');
+			    if (window.confirm(`open interactive session to {targetUrl} in new tab?`)) {
+		                var newWin = window.open(sessionUrl,'_blank');
+				xpraExit.then(newWin.close);
                                 if(!newWin || newWin.closed || typeof newWin.closed=='undefined') {
 				    alert("Could not open new window. Set your browser to allow popups and click ok.");
-				    f.xpraHandler(target_url, session_url);
+				    f.xpraHandler(targetUrl, sessionUrl);
 				}
 			    }
 		    };
