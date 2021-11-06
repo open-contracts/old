@@ -264,6 +264,7 @@ async function OpenContracts() {
                 if (contract.abi[i].type == 'constructor') {continue}
                 const f = {};
                 f.name = contract.abi[i].name;
+		f.description = contract.abi[i].description
                 f.stateMutability = contract.abi[i].stateMutability;
                 f.oracleFolder = contract.abi[i].oracleFolder;
                 f.requiresOracle = (f.oracleFolder != undefined);
@@ -300,14 +301,12 @@ async function OpenContracts() {
 		}
                 f.inputs = [];
                 if (f.stateMutability == "payable") {
-                    f.inputs.push({name: "messageValue", type: "uint256", value: null,
-                                   description: "The value (in ETH) of the transaction."});
+                    f.inputs.push({name: "messageValue", type: "uint256", value: null});
                 }
                 if (!f.requiresOracle) {
                     for (let j = 0; j < contract.abi[i].inputs.length; j++) {
                         const input = contract.abi[i].inputs[j];
-                        f.inputs.push({name: input.name, type: input.type,
-				       description: input.description, value: null});
+                        f.inputs.push({name: input.name, type: input.type, value: null});
                     }
                 }
                 f.call = async function () {
