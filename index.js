@@ -61,13 +61,15 @@ async function showFunction(f) {
         };
         currentFunction += `<div><label for="loadOracle">Load Oracle Data (this may take a bit): </label><input id="loadOracle" type="submit" value="Load" onclick="window.oracleLoader()" /></div>`;  
     }
+    
+    // create a "call" button
+    currentFunction +=`<br> <br> <input id="callButton" type="submit" value="Call" onclick="${'window.call' + f.name}()"/> </form>`;
     window['call' + f.name] = async function () {
         // sets the input.value for every input
         for (let i = 0; i < f.inputs.length; i++) {f.inputs[i].value = $(`#${f.inputs[i].name}`).val()}
         // calls the function
         $('#results').html(await f.call());
     };
-    currentFunction +=`<br> <br> <input id="callButton" type="submit" value="Call" onclick="${'window.call' + f.name}()"/> </form>`;
     $('#currentFunction').html(currentFunction);
     document.getElementById('callButton').disabled = f.requiresOracle;
     $('#results').html("");
