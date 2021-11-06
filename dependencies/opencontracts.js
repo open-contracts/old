@@ -1,8 +1,8 @@
-import * as Base64 from './base64.js';
-import * as CBOR from './cbor.js';
-import * as COSE from './cose.js';
-import * as GITHUB_FILES from './github_files.js';
-import * as x509 from './x509.js';
+import * as mBase64 from './base64.js';
+import * as mCBOR from './cbor.js';
+import * as mCOSE from './cose.js';
+import * as mGITHUB_FILES from './github_files.js';
+import * as mx509 from './x509.js';
 
 
 function hexStringToArray(hexString) {
