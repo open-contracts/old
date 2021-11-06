@@ -84,22 +84,22 @@ async function extractContentIfValid(attestation_data) {
 
 
 
-async function requestHubTransaction(interface, nonce, calldata, oracleSignature, oracleProvider, registrySignature) {
-    fn = Object.getOwnPropertyNames(interface.contract.interface.functions).filter(
-	    sig => interface.contract.interface.getSighash(sig) == calldata.slice(0,10)
+async function requestHubTransaction(opencontracts, nonce, calldata, oracleSignature, oracleProvider, registrySignature) {
+    fn = Object.getOwnPropertyNames(opencontracts.contract.interface.functions).filter(
+	    sig => opencontracts.contract.interface.getSighash(sig) == calldata.slice(0,10)
     )[0];
-    call = interface.contract.interface.decodeFunctionData(calldata.slice(0,10), calldata);
-    estimateHub = await interface.OPNhub.connect(interface.signer).estimateGas[
+    call = opencontracts.contract.interface.decodeFunctionData(calldata.slice(0,10), calldata);
+    estimateHub = await opencontracts.OPNhub.connect(opencontracts.signer).estimateGas[
 	    "forwardCall(address,bytes4,bytes,bytes,address,bytes)"
     ](
-	    interface.contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature
+	    opencontracts.contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature
     );
-    //estimateForwarder = await interface.OPNforwarder.estimateGas["forwardCall(address,bytes)"](
-    //   interface.contract.address, calldata, overrides={from: OPNhub.address});
-    estimateContract = await interface.contract.estimateGas[fn](...call, overrides={from: OPNforwarder.address});
+    //estimateForwarder = await opencontracts.OPNforwarder.estimateGas["forwardCall(address,bytes)"](
+    //   opencontracts.contract.address, calldata, overrides={from: OPNhub.address});
+    estimateContract = await opencontracts.contract.estimateGas[fn](...call, overrides={from: OPNforwarder.address});
     estimateTotal = estimateHub.add(estimateContract);
-    interface.OPNhub.connect(interface.signer).forwardCall(
-	    interface.contract.address, nonce, calldata, oracleSignature,
+    opencontracts.OPNhub.connect(opencontracts.signer).forwardCall(
+	    opencontracts.contract.address, nonce, calldata, oracleSignature,
 	    oracleProvider, registrySignature, overrides={gasLimit: estimateTotal}
     );
 }
@@ -123,8 +123,8 @@ async function decrypt(AESkey, json) {
     return JSON.parse(new TextDecoder().decode(decrypted));
 }
 
-async function enclaveSession(interface, f) {
-    var registryIP = hexStringToArray(await interface.OPNhub.registryIpList(0)).join(".");
+async function enclaveSession(opencontracts, f) {
+    var registryIP = hexStringToArray(await opencontracts.OPNhub.registryIpList(0)).join(".");
     console.log(`Trying to connect to registry with IP ${registryIP}.`);
     var ws = new WebSocket("wss://" + registryIP + ":8080/");
     var secondsPassed = 0;
@@ -163,7 +163,7 @@ async function enclaveSession(interface, f) {
 		ws.send(JSON.stringify({fname: 'submit_AES', encrypted_AES: encryptedAESkey}));
 		const signThis = ethers.utils.arrayify("0x" + data['signThis']);
 		ws.send(JSON.stringify({fname: 'submit_signature',
-					signature: await interface.signer.signMessage(signThis)}));
+					signature: await opencontracts.signer.signMessage(signThis)}));
 		f.oracleData.fname = 'submit_oracle';
 		ws.send(JSON.stringify(await encrypt(AESkey, f.oracleData)));
 		ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'run_oracle'})));
@@ -186,7 +186,7 @@ async function enclaveSession(interface, f) {
 		    ws.send(JSON.stringify(await encrypt(AESkey, {fname: 'user_input', input: userInput})));
 		} else if (data['fname'] == 'submit') {
 		    await f.submitHandler(async function() {
-		        return await requestHubTransaction(interface, data['nonce'], data['calldata'], data['oracleSignature'],
+		        return await requestHubTransaction(opencontracts, data['nonce'], data['calldata'], data['oracleSignature'],
 							    data['oracleProvider'], data['registrySignature']);
 		    });
 		} else if (data['fname'] == 'error') {
@@ -197,14 +197,14 @@ async function enclaveSession(interface, f) {
     }
 }
 
-async function ethereumTransaction(interface, f) {
+async function ethereumTransaction(opencontracts, f) {
     args = [];
     for (let i = 0; i < f.inputs.length; i++) {args.push(f.inputs[i].value)}
     if (f.stateMutability == 'payable') {
         const msgValue = ethers.utils.parseEther(args.shift());
         args.push({value: msgValue});
     }
-    return await interface.contract.connect(interface.signer).functions[f.name].apply(this, args);
+    return await opencontracts.contract.connect(opencontracts.signer).functions[f.name].apply(this, args);
 }
 
 
@@ -225,7 +225,7 @@ export async function githubOracleDownloader(user, repo, ref, dir) {
 
 
 export async function OpenContracts() {
-    const interface = {};
+    const opencontracts = {};
     // detect metamask
     if (window.ethereum) {
         await init()
@@ -238,35 +238,35 @@ export async function OpenContracts() {
         if (ethereum && ethereum.isMetaMask) {
             window.ethereum.on('chainChanged', (_chainId) => window.location.reload());
             window.ethereum.request({method: 'eth_requestAccounts'});
-            interface.provider = new ethers.providers.Web3Provider(ethereum, 'any');
-            interface.network = (await interface.provider.getNetwork()).name;
-            interface.signer = interface.provider.getSigner();
+            opencontracts.provider = new ethers.providers.Web3Provider(ethereum, 'any');
+            opencontracts.network = (await opencontracts.provider.getNetwork()).name;
+            opencontracts.signer = opencontracts.provider.getSigner();
         } else {
             throw new Error("No Metamask detected.");
         }
     }
     
     // instantiates the contracts
-    interface.parseContracts = function (oc_interface, contract_interface) {
-        if (!(interface.network in oc_interface)) {
-            var errormsg = "Your Metamask is set to " + interface.network + ", which is not supported by Open Contracts.";
+    opencontracts.parseContracts = function (oc_interface, contract_interface) {
+        if (!(opencontracts.network in oc_interface)) {
+            var errormsg = "Your Metamask is set to " + opencontracts.network + ", which is not supported by Open Contracts.";
             throw new Error(errormsg + " Set your Metamask to one of: " +  Object.keys(oc_interface));
         } else {
-            const token = oc_interface[interface.network].token;
-            interface.OPNtoken = new ethers.Contract(token.address, token.abi, interface.provider);
-            const forwarder = oc_interface[interface.network].forwarder;
-            interface.OPNforwarder = new ethers.Contract(forwarder.address, forwarder.abi, interface.provider);
-            const hub = oc_interface[interface.network].hub;
-            interface.OPNhub = new ethers.Contract(hub.address, hub.abi, interface.provider);    
+            const token = oc_interface[opencontracts.network].token;
+            opencontracts.OPNtoken = new ethers.Contract(token.address, token.abi, opencontracts.provider);
+            const forwarder = oc_interface[opencontracts.network].forwarder;
+            opencontracts.OPNforwarder = new ethers.Contract(forwarder.address, forwarder.abi, opencontracts.provider);
+            const hub = oc_interface[opencontracts.network].hub;
+            opencontracts.OPNhub = new ethers.Contract(hub.address, hub.abi, opencontracts.provider);    
         }
         
-        if (!(interface.network in contract_interface)) {
-            var errormsg = "Your Metamask is set to " + interface.network + ", which is not supported by this contract.";
+        if (!(opencontracts.network in contract_interface)) {
+            var errormsg = "Your Metamask is set to " + opencontracts.network + ", which is not supported by this contract.";
             throw new Error(errormsg + " Set your Metamask to one of: " +  Object.keys(contract_interface));
         } else {
-            const contract = contract_interface[interface.network];
-            interface.contract = new ethers.Contract(contract.address, contract.abi, interface.provider);
-            interface.contractFunctions = [];
+            const contract = contract_interface[opencontracts.network];
+            opencontracts.contract = new ethers.Contract(contract.address, contract.abi, opencontracts.provider);
+            opencontracts.contractFunctions = [];
             for (let i = 0; i < contract.abi.length; i++) {
                 if (contract.abi[i].type == 'constructor') {continue}
                 const f = {};
@@ -326,17 +326,17 @@ export async function OpenContracts() {
 			if (f.oracleData == undefined) {
 				throw new Error(`No oracleData specified for "${f.name}".`)
 			};
-                        return await enclaveSession(interface, f);
+                        return await enclaveSession(opencontracts, f);
                     } else {
-                        return await ethereumTransaction(interface, f);
+                        return await ethereumTransaction(opencontracts, f);
                     }
                 }
-                interface.contractFunctions.push(f);
+                opencontracts.contractFunctions.push(f);
             }
         }
     }
     
-    return interface;
+    return opencontracts;
 }
 
 
