@@ -1,16 +1,36 @@
-var interface = null;
+var opencontracts = null;
 
 async function loadOpenContract() {
-    interface = await OpenContracts(window);
+    opencontracts = await OpenContracts(window);
+    
+    // need to get the JSONs
     const link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
     const contract_interface = JSON.parse(await (await fetch(new URL(link + "/interface.json"))).text());
     const oc_interface = JSON.parse(await (await fetch('opencontracts_interface.json')).text());
-    interface.parseContracts(oc_interface, contract_interface);
+    
+    // now go throught he functions.
+    opencontracts.parseContracts(oc_interface, contract_interface);
     fnButtons = "<p><b>Contract Functions:</b></p>";
-    for (let i = 0; i < interface.contractFunctions.length; i++) {
-        fname = interface.contractFunctions[i].name;
-        window['show' + fname] = function () {showFunction(interface.contractFunctions[i])};
-        fnButtons += `<input id=${fname} type="submit" value="${fname}" onclick="${'window.show'+fname}()" />`;
+    for (let i = 0; i < opencontracts.contractFunctions.length; i++) {
+        f = opencontracts.contractFunctions[i];
+        // 
+        //  Create a button for every function f, which has the following properties:
+        //      f.name = "someString"
+        //      f.description = "someString"
+        //      f.requiresOracle in {true, false} 
+        //      f.stateMutability in {"view", "pure", "nonpayable", "payable"}
+        //      f.inputs = list[input], where:
+        //                      input.name = "someString"
+        //                      input.type = "someSolidityVariableType" (e.g. "uint256")
+        //                      input.value = null      (needs to be set by you before calling f.call() )
+        //      f.call() (exectues the function)
+        //
+        //  Need to specify:
+        //       input.value for every input
+        //       if f.requiresOracle: 
+        //          f.oracleData = {filename1: b64encoded, filename2: b64encoded, ...}  representing the f.oracleFolder from the repo. Use "githubOracleDownloader" like below.      
+        window['show' + f.name] = function () {showFunction(f)};
+        fnButtons += `<input id=${f.name} type="submit" value="${f.name}" onclick="${'window.show' + f.name}()" />`;
     }
     $('#functionNames').html(fnButtons);
     $('#currentFunction').html("");
