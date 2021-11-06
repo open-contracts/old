@@ -26,11 +26,11 @@ async function showFunction(f) {
         currentFunction += `<div><label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
     }
     if (f.requiresOracle) {
-        // f.printHandler = printHandler;
-        // f.inputHander = inputHandler;
-        // f.xpraHandler = xpraHandler;
-        // f.errorHandler = errorHandler;
-        // f.submitHandler = submitHandler;
+        // f.printHandler = async function (message) {};
+        // f.inputHander = async function (message) {return userInput};
+        // f.xpraHandler = async function (targetUrl, sessionUrl, xpraExit) {win = open(sessionUrl); xpraExit.then(win.close())};
+        // f.errorHandler = async function (message) {}
+        // f.submitHandler = async function (metamaskTx) {await metamaskTx(); };
         const [user, repo, ref] =  $('#contractGithub').val().split("/");
         window["oracleLoader"] = async function () {
             f.oracleData = await githubOracleDownloader(user, repo, ref, f.oracleFolder)
