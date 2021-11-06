@@ -46,11 +46,13 @@ async function showFunction(f) {
         currentFunction += `<div><label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
     }
     if (f.requiresOracle) {
-        // f.printHandler = async function (message) {};
-        // f.inputHander = async function (message) {return userInput};
-        // f.xpraHandler = async function (targetUrl, sessionUrl, xpraExit) {win = open(sessionUrl); xpraExit.then(win.close())};
-        // f.errorHandler = async function (message) {}
-        // f.submitHandler = async function (metamaskTx) {await metamaskTx(); };
+        // Optionally specify:
+        //      f.printHandler = async function (message) {};
+        //      f.inputHander = async function (message) {return userInput};
+        //      f.xpraHandler = async function (targetUrl, sessionUrl, xpraExit) {win = open(sessionUrl); xpraExit.then(win.close())};
+        //      f.errorHandler = async function (message) {}
+        //      f.submitHandler = async function (metamaskTx) {await metamaskTx(); };
+        //
         const [user, repo, ref] =  $('#contractGithub').val().split("/");
         window["oracleLoader"] = async function () {
             f.oracleData = await githubOracleDownloader(user, repo, ref, f.oracleFolder)
@@ -60,7 +62,9 @@ async function showFunction(f) {
         currentFunction += `<div><label for="loadOracle">Load Oracle Data (this may take a bit): </label><input id="loadOracle" type="submit" value="Load" onclick="window.oracleLoader()" /></div>`;  
     }
     window['call' + f.name] = async function () {
+        // sets the input.value for every input
         for (let i = 0; i < f.inputs.length; i++) {f.inputs[i].value = $(`#${f.inputs[i].name}`).val()}
+        // calls the function
         $('#results').html(await f.call());
     };
     currentFunction +=`<br> <br> <input id="callButton" type="submit" value="Call" onclick="${'window.call' + f.name}()"/> </form>`;
