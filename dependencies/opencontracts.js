@@ -85,10 +85,10 @@ async function requestHubTransaction(interface, nonce, calldata, oracleSignature
     estimateHub = await interface.OPNhub.connect(interface.signer).estimateGas[
 	    "forwardCall(address,bytes4,bytes,bytes,address,bytes)"
     ](
-	    contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature
+	    interface.contract.address, nonce, calldata, oracleSignature, oracleProvider, registrySignature
     );
     //estimateForwarder = await interface.OPNforwarder.estimateGas["forwardCall(address,bytes)"](
-    //   contract.address, calldata, overrides={from: OPNhub.address});
+    //   interface.contract.address, calldata, overrides={from: OPNhub.address});
     estimateContract = await interface.contract.estimateGas[fn](...call, overrides={from: OPNforwarder.address});
     estimateTotal = estimateHub.add(estimateContract);
     interface.OPNhub.connect(interface.signer).forwardCall(
