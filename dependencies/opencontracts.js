@@ -1,4 +1,4 @@
-import {Base64} from './base64.js';
+import {Base64} from './dependencies/base64.js';
 import {CBOR} from './cbor.js';
 import {COSE} from './cose.js';
 import {GITHUB_FILES} from './github_files.js';
