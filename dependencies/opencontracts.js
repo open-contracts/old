@@ -117,7 +117,7 @@ async function decrypt(AESkey, json) {
 }
 
 async function enclaveSession(opencontracts, f) {
-    registryIP = f.registryIP;
+    var registryIP = f.registryIP;
     if (registryIP == undefined) {
         registryIP = hexStringToArray(await opencontracts.OPNhub.registryIpList(0)).join(".");
     }
