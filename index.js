@@ -69,6 +69,9 @@ async function showFunction(f) {
         // sets the input.value for every input
         for (let i = 0; i < f.inputs.length; i++) {f.inputs[i].value = $(`#${f.inputs[i].name}`).val()}
         // calls the function
+        const url = new URL(window.location.href);
+        const registryOverride = url.searchParams.get('registryIP');
+        if (registryOverride != null) {f.registryIP = registryOverride}
         $('#results').html(await f.call());
     };
     $('#currentFunction').html(currentFunction);
