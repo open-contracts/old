@@ -71,6 +71,7 @@ async function showFunction(f) {
         // calls the function
         const url = new URL(window.location.href);
         const registryOverride = url.searchParams.get('registryIP');
+        console.log("override:", registryOverride);
         if (registryOverride != null) {f.registryIP = registryOverride}
         $('#results').html(await f.call());
     };
