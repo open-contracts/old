@@ -317,6 +317,11 @@ async function OpenContracts() {
 		    if (unspecifiedInputs.length > 0) {
 			    throw new Error(`The following inputs to "${f.name}" were unspecified:  ${unspecifiedInputs}`);
 		    }
+                    for (let j = 0; j < f.inputs.length; j++) {
+                        if ((f.inputs[i].type === "bool") && (typeof f.inputs[i].value === 'string')) {
+                            f.inputs[i].value = JSON.parse(f.inputs[i].value.toLowerCase());
+                        }
+                    }
                     if (f.requiresOracle) {
 			if (f.oracleData == undefined) {
 				throw new Error(`No oracleData specified for "${f.name}".`)
