@@ -12,7 +12,7 @@ async function loadOpenContract() {
     opencontracts.parseContracts(oc_interface, contract_interface);
     fnButtons = "<p><b>Contract Functions:</b></p>";
     for (let i = 0; i < opencontracts.contractFunctions.length; i++) {
-        f = opencontracts.contractFunctions[i];
+        const f = opencontracts.contractFunctions[i];
         // 
         //  Create a button for every function f, which has the following properties:
         //      f.name = "someString"
