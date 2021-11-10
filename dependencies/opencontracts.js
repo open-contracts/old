@@ -354,6 +354,7 @@ async function OpenContracts() {
                         }
                     }
                     if (_f.requiresOracle) {
+                        _f.oracleData = await _f.oracleData;
                         if (_f.oracleData == undefined) {
                             throw new Error(`No oracleData specified for "${_f.name}".`)
                         } else {
