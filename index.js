@@ -55,7 +55,10 @@ async function showFunction(f) {
         //
         const [user, repo, ref] =  $('#contractGithub').val().split("/");
         window["oracleLoader"] = async function () {
-            f.oracleData = await githubOracleDownloader(user, repo, ref, f.oracleFolder)
+            f.oracleData = githubOracleDownloader(user, repo, ref, f.oracleFolder);
+            for (let i = 0; i < files.length; i++) {
+                f.oracleData[files[i]] = await f.oracleData[files[i]];
+            }
             console.log(f.oracleData, f.oracleFolder);
             document.getElementById('callButton').disabled = false;
             document.getElementById('loadOracle').disabled = true;
