@@ -5,7 +5,7 @@ async function loadOpenContract() {
     
     // need to get the JSONs
     const link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
-    const contract_interface = JSON.parse(await (await fetch(new URL(link + "/interface.json"))).text());
+    const contract_interface ="@git" + $('#contractGithub').val();
     const oc_interface = JSON.parse(await (await fetch('client-protocol/opencontracts_interface.json')).text());
     
     // now go throught he functions.
