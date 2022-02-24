@@ -5,7 +5,7 @@ async function loadOpenContract() {
     
     // need to get the JSONs
     const link = "https://raw.githubusercontent.com/" + $('#contractGithub').val();
-    const contract_interface ="@git" + $('#contractGithub').val();
+    const contractLocation ="@git/" + $('#contractGithub').val();
     const oc_interface = JSON.parse(await (await fetch('client-protocol/opencontracts_interface.json')).text());
     
     // now go throught he functions.
@@ -45,28 +45,7 @@ async function showFunction(f) {
     for (let i = 0; i < f.inputs.length; i++) {
         currentFunction += `<div><label for="${f.inputs[i].name}"> ${f.inputs[i].name} (${f.inputs[i].description}):</label> <input id="${f.inputs[i].name}" type="text" value="" size="60" /></div>`;
     }
-    if (f.requiresOracle) {
-        // Optionally specify:
-        //      f.printHandler = async function (message) {};
-        //      f.inputHander = async function (message) {return userInput};
-        //      f.xpraHandler = async function (targetUrl, sessionUrl, xpraExit) {win = open(sessionUrl); xpraExit.then(win.close())};
-        //      f.errorHandler = async function (message) {}
-        //      f.submitHandler = async function (metamaskTx) {await metamaskTx(); };
-        //
-        const [user, repo, ref] =  $('#contractGithub').val().split("/");
-        window["oracleLoader"] = async function () {
-            f.oracleData = await githubOracleDownloader(user, repo, ref, f.oracleFolder);
-            files = Object.keys(f.oracleData);
-            for (let i = 0; i < files.length; i++) {
-                f.oracleData[files[i]] = await f.oracleData[files[i]];
-            }
-            console.log(f.oracleData, f.oracleFolder);
-            document.getElementById('callButton').disabled = false;
-            document.getElementById('loadOracle').disabled = true;
-        };
-        currentFunction += `<div><label for="loadOracle">Load Oracle Data (this may take a bit): </label><input id="loadOracle" type="submit" value="Load" onclick="window.oracleLoader()" /></div>`;  
-    }
-    
+
     // create a "call" button
     currentFunction +=`<br> <br> <input id="callButton" type="submit" value="Call" onclick="${'window.call' + f.name}()"/> </form>`;
     window['call' + f.name] = async function () {
