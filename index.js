@@ -9,7 +9,7 @@ async function loadOpenContract() {
     const oc_interface = JSON.parse(await (await fetch('client-protocol/opencontracts_interface.json')).text());
     
     // now go throught he functions.
-    opencontracts.parseContracts(oc_interface, contract_interface);
+    await opencontracts.parseContracts(oc_interface, contractLocation);
     fnButtons = "<p><b>Contract Functions:</b></p>";
     for (let i = 0; i < opencontracts.contractFunctions.length; i++) {
         const f = opencontracts.contractFunctions[i];
