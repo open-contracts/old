@@ -59,6 +59,5 @@ async function showFunction(f) {
         $('#results').html(await f.call());
     };
     $('#currentFunction').html(currentFunction);
-    document.getElementById('callButton').disabled = f.requiresOracle;
     $('#results').html("");
 }
